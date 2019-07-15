@@ -1,0 +1,626 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="initial-scale=1.0,maximum-scale=1.0,user-scalable=no" />
+    <link rel="stylesheet" href="../../css/plugins/bootstrap/bootstrap.css">
+    <link rel="stylesheet" href="../../css/plugins/bootstrap/bootstrap-table.css">
+    <link rel="stylesheet" href="../../css/plugins/bootstrap/bootstrap-select.css">
+    <link rel="stylesheet" href="../../css/plugins/awesome/font-awesome.min.css">
+    <link rel="stylesheet" href="../../css/plugins/ztree/zTreeStyle.css">
+    <link rel="stylesheet" href="../../css/plugins/jquery/jquery-confirm.css">
+    <link rel="stylesheet" href="../../css/common/common.css">
+    <link rel="stylesheet" href="../../css/common/tables.css">
+    <link rel="stylesheet" href="../../css/common/modals.css">
+    <script type="text/javascript" src='../../js/plugins/jquery/jquery.min.js'></script>
+    <script type='text/javascript' src='../../js/plugins/bootstrap/bootstrap.js'></script>
+    <script type='text/javascript' src='../../js/plugins/bootstrap/bootstrap-table.js'></script>
+    <script type='text/javascript' src='../../js/plugins/bootstrap/bootstrap-table-zh-CN.js'></script>
+    <script type='text/javascript' src='../../js/plugins/bootstrap/bootstrap-select.js'></script>
+    <script type='text/javascript' src='../../js/plugins/ztree/jquery.ztree.core.js'></script>
+    <script type='text/javascript' src='../../js/plugins/ztree/jquery.ztree.exhide.js'></script>
+    <script type='text/javascript' src='../../js/plugins/ztree/fuzzysearch.js'></script>
+    <script type='text/javascript' src='../../js/plugins/ztree/jquery.ztree.excheck.js'></script>
+    <script type="text/javascript" src='../../js/plugins/jquery/jquery-confirm.js'></script>
+    <script type='text/javascript' src='../../js/common/common.js'></script>
+    <script type="text/javascript" src="http://api.map.baidu.com/api?v=3.0&ak=IcEakKA5CcH3sIqLpSxKu6ymZNXdNLKe"></script>
+    <title>设备管理</title>
+    <script type="text/javascript">
+		var setting = {
+            view: {
+                showLine: false
+            },
+            callback: {
+                onClick: zTreeOnClick,
+                onRightClick: zTreeOnRightClick
+            },
+            data: {
+                simpleData: {
+                    enable: true
+                }
+            }
+		};
+        var settingAdd={
+            view: {
+                showLine: false
+            },
+            callback: {
+                onCheck: zTreeOnCheck
+            },
+            data: {
+                simpleData: {
+                    enable: true
+                }
+            },
+            check:{
+                enable:true,
+                chkStyle :"checkbox",
+                autoCheckTrigger: true
+            }
+        }
+
+		var zNodes =[
+			{ id:1, pId:0, name:"某某某石油管理局", iconSkin:"folder",device:false, open:true},
+            { id:11, pId:1, name:"某某某采油厂1", iconSkin:"folder",device:false},
+            { id:111, pId:11, name:"采油一队", iconSkin:"file",device:false},
+            { id:112, pId:11, name:"采油二队", iconSkin:"file",device:false},
+            { id:113, pId:11, name:"采油三队", iconSkin:"file",device:false},
+			{ id:12, pId:1, name:"某某某采油厂2", iconSkin:"folder",device:false},
+            { id:121, pId:12, name:"采油一队", iconSkin:"file",device:false},
+            { id:122, pId:12, name:"采油二队", iconSkin:"file",device:false},
+            { id:13, pId:1, name:"某某某采油厂3", iconSkin:"folder",device:false},
+            { id:131, pId:13, name:"采油一队", iconSkin:"file",device:false},
+            { id:132, pId:13, name:"采油二队", iconSkin:"file",device:false},
+            { id:133, pId:13, name:"采油三队", iconSkin:"file",device:false},
+			{ id:1331, pId:133, name:"钻机1#", iconSkin:"noChart",device:true},
+			{ id:1332, pId:133, name:"钻机2#", iconSkin:"noChart",device:true}
+        ];
+        var zNodesAdd =[
+			{ id:1, pId:0, name:"某某某石油管理局", open:true},
+            { id:11, pId:1, name:"某某某采油厂1"},
+            { id:111, pId:11, name:"采油一队"},
+            { id:112, pId:11, name:"采油二队"},
+            { id:113, pId:11, name:"采油三队"},
+			{ id:12, pId:1, name:"某某某采油厂2"},
+            { id:121, pId:12, name:"采油一队"},
+            { id:122, pId:12, name:"采油二队"},
+            { id:13, pId:1, name:"某某某采油厂3"},
+            { id:131, pId:13, name:"采油一队"},
+            { id:132, pId:13, name:"采油二队"},
+            { id:133, pId:13, name:"采油三队"},
+			{ id:1331, pId:133, name:"钻机1#"},
+			{ id:1332, pId:133, name:"钻机2#"}
+		];
+
+        function zTreeOnClick(event, treeId, treeNode) {
+            alert(treeNode.tId + ", " + treeNode.name + ",左键刷新右侧内容");
+        }
+        function zTreeOnRightClick(event, treeId, treeNode) {
+            if (treeNode) {
+				zTree.selectNode(treeNode);
+				showRMenu("node", treeNode,event.clientX, event.clientY);
+			}
+        }
+        function showRMenu(type,treeNode, x, y) {
+			$("#rMenu ul").show();
+			if(treeNode.device) {
+				$("#m_add").hide();
+                $("#m_del").hide();
+                $("#m_bind_device").show();
+                $("#m_view_device").show();
+                $("#m_del_device").show();
+                $("#m_add_device").show();
+			}else{
+                $("#m_add").show();
+                $("#m_del").show();
+                $("#m_bind_device").hide();
+                $("#m_view_device").hide();
+                $("#m_del_device").hide();
+                $("#m_add_device").hide();
+            }
+            y += document.body.scrollTop;
+            x += document.body.scrollLeft;
+           rMenu.css({"top":y+"px", "left":x+"px", "visibility":"visible"});
+           rMenu.children("ul").css({"left":"0px","right":"auto"})
+
+			$("body").bind("mousedown", onBodyMouseDown);
+		}
+		function hideRMenu() {
+			if (rMenu) rMenu.css({"visibility": "hidden"});
+			$("body").unbind("mousedown", onBodyMouseDown);
+		}
+		function onBodyMouseDown(event){
+			if (!(event.target.id == "rMenu" || $(event.target).parents("#rMenu").length>0)) {
+				rMenu.css({"visibility" : "hidden"});
+			}
+		}
+		var addCount = 1;
+		function addGroupNode() {
+			hideRMenu();
+            $('#myModalAdd').modal('show');
+			var newNode = { name:"newNode " + (addCount++),name:"newNode " + (addCount++),iconSkin:"noChart",device:true};
+			zTree.addNodes(zTree.getSelectedNodes()[0], newNode);
+		}
+        function getDeviceAll($tr,nodesAll){
+            var deviceAll={idArr:[],objArr:[]};
+            getDeviceOne($tr);
+            function getDeviceOne($tr){
+                nodesAll.map(function(node){
+                    if(node.pId == $tr.id&&node.isParent){
+                        if(node.device){deviceAll.idArr.push(node.id);deviceAll.objArr.push(node);}
+                        getDeviceOne(node);
+                    }else if(node.pId == $tr.id&&node.device){
+                        deviceAll.idArr.push(node.id);
+                        deviceAll.objArr.push(node);
+                    }
+                }) ;
+            }
+            return deviceAll;
+        }
+		function removeGroupNode() {
+			hideRMenu();
+            var nodes = zTree.getSelectedNodes();
+            var nodesAll = zTree.transformToArray(zTree.getNodes());
+            var deviceArr=getDeviceAll(nodes[0],nodesAll);//获取删除的设备id
+            if(deviceArr.objArr.length>0){
+                $.confirm({
+                    title: '',
+                    content: '是否删除该分组下的全部设备?',
+                    closeIcon: true,
+                    buttons: {
+                        ok: {
+                            text: "全部删除",
+                            btnClass: 'btn-remove',
+                            keys: ['enter'],
+                            action: function(){
+                                deviceArr.objArr.map(function(node){
+                                    zTree.removeNode(node);
+                                });
+                                /* $.ajax({
+                                    type : 'get',
+                                    url : '${pageContext.request.contextPath }/data/logkit/group/delete/'+id,
+                                    success : function(data) {
+                                        var dataJson = eval('(' + data + ')');
+                                        if(dataJson.code == 1){
+                                            groupLists();
+                                        }else{
+                                            $.dialog({title: '提示',content: '<div><i class="fa fa-warning"></i></div>' + dataJson.message});
+                                        }
+                                        
+                                    }
+                                }); */
+                            }
+                        },
+                        cancel: {
+                            text: "返回",
+                            btnClass: 'btn-reset',
+                            keys: ['esc']
+                        }
+                    }
+                });
+            } else {
+                $.confirm({
+                    title: '',
+                    content: '该分组下无设备',
+                    closeIcon: true,
+                    buttons: {
+                        cancel: {
+                            text: "返回",
+                            btnClass: 'btn-reset',
+                            keys: ['esc']
+                        }
+                    }
+                });
+            }
+		}
+        function addDeviceNode(){
+            hideRMenu();
+            $('#myModalDevice').modal('show');
+            var newNode = { name:"newNode " + (addCount++),id:"newNode " + (addCount++),iconSkin:"noChart",device:true};
+			zTree.addNodes(zTree.getSelectedNodes()[0], newNode);
+        }
+        function removeDeviceNode(){
+            hideRMenu();
+            var nodes = zTree.getSelectedNodes();
+            zTree.removeNode(nodes[0]);
+        }
+        function viewDeviceNode(){
+            var nodes = zTree.getSelectedNodes();
+            alert(nodes[0]);
+        }
+        function zTreeOnCheck(event, treeId, treeNode) {
+            var checkoutNodes = zTreeAdd.getCheckedNodes(true);
+            var count=0;
+            checkoutNodes.map(function(node){
+                if(!node.isParent){
+                    count++;
+                }
+            });
+            $(".checkedCount").text(count);
+        };
+        var zTree, rMenu,zTreeAdd;
+        $(document).ready(function(){
+            /* zTree树 */
+            zTree = $.fn.zTree.init($("#tree-obj"), setting, zNodes); 
+            zTreeAdd=$.fn.zTree.init($("#tree-addObj"), settingAdd, zNodesAdd); 
+            zTree.expandAll(true);
+            zTreeAdd.expandAll(true);
+            rMenu = $("#rMenu");
+            fuzzySearch('tree-obj','#keyword',null,false);
+            fuzzySearch('tree-addObj','#keywordAdd',null,false); 
+            /* 百度地图调用 */
+            function myFun(result){
+               /*  result.center.lng=116.480343;
+                result.center.lat=40.026989; */
+                var map = new BMap.Map("baiduMaps");// 创建地图实例  
+                var point = new BMap.Point(result.center.lng, result.center.lat);// 创建点坐标  
+                map.centerAndZoom(point, 15);// 初始化地图，设置中心点坐标和地图级别 
+                map.enableScrollWheelZoom(true);     //开启鼠标滚轮缩放
+                var opts = {type: BMAP_NAVIGATION_CONTROL_SMALL,anchor:BMAP_ANCHOR_BOTTOM_LEFT}    
+                map.addControl(new BMap.NavigationControl(opts));
+                map.addControl(new BMap.MapTypeControl()); 
+                /* 添加标注 */
+                var mk = new BMap.Marker(result.center);
+                map.addOverlay(mk);
+            }
+            var myCity = new BMap.LocalCity();
+            myCity.get(myFun); 
+            /* 表格调用 */
+            const $tableDevice = $('#table_device');
+            const $tableDevicePa=$('.cloud-content-table-device');
+            const tableDataDevice=[{
+                id:0,
+                name: '钻机1#',
+                parent: '钻机',
+                describe: '应用程序内核版本',
+                type: '钻机',
+                firm:"某某某石油机械厂",
+                model:"SKG-500"
+            }, {
+                id:1,
+                name: '钻机2#',
+                parent: '钻机',
+                describe: '应用程序内核版本',
+                type: '钻机',
+                firm:"某某某石油机械厂",
+                model:"SKG-500"
+            },{
+                id:2,
+                name: '钻机3#',
+                parent: '钻机',
+                describe: '应用程序内核版本',
+                type: '钻机',
+                firm:"某某某石油机械厂",
+                model:"SKG-500"
+            }, {
+                id:3,
+                name: '钻机4#',
+                parent: '钻机',
+                describe: '应用程序内核版本',
+                type: '钻机',
+                firm:"某某某石油机械厂",
+                model:"SKG-500"
+            },{
+                id:4,
+                name: '钻机5#',
+                parent: '钻机',
+                describe: '应用程序内核版本',
+                type: '钻机',
+                firm:"某某某石油机械厂",
+                model:"SKG-500"
+            }, {
+                id:5,
+                name: '钻机6#',
+                parent: '钻机',
+                describe: '应用程序内核版本',
+                type: '钻机',
+                firm:"某某某石油机械厂",
+                model:"SKG-500"
+            },{
+                id:7,
+                name: '钻机8#',
+                parent: '钻机',
+                describe: '应用程序内核版本',
+                type: '钻机',
+                firm:"某某某石油机械厂",
+                model:"SKG-500"
+            }, {
+                id:9,
+                name: '钻机10#',
+                parent: '钻机',
+                describe: '应用程序内核版本',
+                type: '钻机',
+                firm:"某某某石油机械厂",
+                model:"SKG-500"
+            },{
+                id:10,
+                name: '钻机11#',
+                parent: '钻机',
+                describe: '应用程序内核版本',
+                type: '钻机',
+                firm:"某某某石油机械厂",
+                model:"SKG-500"
+            }]
+            
+            function operateFormatterDevice(value, row, index) {
+                return [
+                    '<div class="btn-group dropright">'+
+                        '<i class="fa fa-ellipsis-h dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"></i>'+
+                        '<ul class="dropdown-menu">'+
+                            '<li><a class="look" href="javascript:void(0)"><i class="fa fa-search"></i>查看</a></li>'+
+                            '<li><a class="bind" href="javascript:void(0)"><i class="fa fa-link"></i>绑定</a></li>'+
+                            '<li><a class="edit" href="javascript:void(0)"><i class="fa fa-pencil"></i>编辑</a></li>'+
+                            '<li><a class="remove" href="javascript:void(0)"><i class="fa fa-trash-o"></i>删除</a></li>'+
+                        '</ul>'+
+                    '</div>'
+                ].join('');
+            }
+            window.operateEventsDevice = {
+                'click .edit': function (e, value, row, index) {//点击编辑
+                    alert(`You click edit action, row: ${JSON.stringify(row)}`);
+                },
+                'click .look': function (e, value, row, index) {//点击查看
+                    alert(`You click look action, row: ${JSON.stringify(row)}`);
+                },
+                'click .remove': function(e, value, {id}, index) {//点击删除
+                    $tableDevice.bootstrapTable('remove', {
+                        field: 'id',
+                        values: [id]
+                    });
+                }
+            };
+            $tableDevicePa.find(".query").click(function(){//点击查询
+                var type=$(this).closest(".condition").find(".name option:selected").text();
+                var belongs=$(this).closest(".condition").find(".type option:selected").text();
+                var text=$(this).closest(".condition").find(".inputVal").val();
+                $tableDevice.bootstrapTable('refresh', {
+                        silent: true,
+                        url: newUrl,
+                        query: {name: "name",type:"type",text:"text"}
+                });
+            });
+            $tableDevice.bootstrapTable({
+                pagination: true,                   //是否显示分页（*）
+                pageList: [5, 15, 25, 100],        //可供选择的每页的行数（*）
+                striped:true,
+                pageSize:5,
+                classes:'table table-point-i',
+                columns: [{
+                    field: 'name',
+                    title: '名称',
+                    align:'center'
+                }, {
+                    field: 'parent',
+                    title: '父级',
+                    align:'center'
+                }, {
+                    field: 'describe',
+                    title: '描述',
+                    align:'center'
+                },{
+                    field: 'type',
+                    title: '类型',
+                    align:'center'
+                }, {
+                    field: 'firm',
+                    title: '厂商',
+                    align:'center'
+                }, {
+                    field: 'model',
+                    title: '型号',
+                    align:'center'
+                }, {
+                    field: 'operation',
+                    title: '操作',
+                    align:'center',
+                    events: operateEventsDevice,
+                    formatter: operateFormatterDevice
+                }],
+                data: tableDataDevice
+            }); 
+		});
+	</script>
+</head>
+<body>
+<div class="cloud-container">
+    <div class="cloud-content-l cloud-menu">
+        <nav class="cloud-Lbar scrollBox" role="navigation">
+            <ul class="acc-menu">
+                <li class="treeview"><span>接入数据</span></li>
+                <li class="treeview"><a href=""><span>网管管理</span></a></li>
+                <li class="treeview"><a href=""><span>数据源管理</span></a></li>
+                <li class="treeview"><a href=""><span>分组管理</span></a></li>
+                <li class="treeview active"><a href=""><span>设备管理</span></a></li>
+                <li class="treeview"><a href=""><span>工作空间</span></a></li>
+            </ul>
+        </nav>
+        <div class="cloud-shrink-L shrink-moved"></div>
+    </div>
+    <div class="cloud-content-r cloud-menu-r">
+        <div class="cloud-menu-inner scrollBox">
+            <div class="row">
+                <div class="col-md-12 col-lg-12">
+                    <div class="form-group has-feedback">
+                        <input type="text" class="form-control empty" id="keyword" placeholder="搜索">
+                        <span class="glyphicon glyphicon-search form-control-feedback" style="color:#198ccb;"></span>
+                    </div>
+                    <h5 style="font-weight:700;">设备及传感器列表</h5>
+                    <hr>
+                </div>
+                <div class="col-md-12 col-lg-12">
+                    <ul id="tree-obj" class="ztree"></ul>
+                </div>
+                <div id="rMenu" class="dropright">
+                    <ul class="dropdown-menu">
+                        <li id="m_add"><a onclick="addGroupNode()"><i class="fa fa-plus"></i>添加设备</a></li>
+                        <li id="m_del"><a  onclick="removeGroupNode()"><i class="fa fa-trash-o"></i>删除设备</a></li>
+                        <li id="m_bind_device"><a onclick=""><i class="fa fa-link"></i>绑定</a></li>
+                        <li id="m_view_device"><a  onclick="viewDeviceNode()"><i class="fa fa-search"></i>查看</a></li>
+                        <li id="m_del_device"><a onclick="removeDeviceNode()"><i class="fa fa-trash-o"></i>删除</a></li>
+                        <li id="m_add_device"><a  onclick="addDeviceNode()"><i class="fa fa-plus"></i>添加子设备</a></li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+        <div class="cloud-menu-content scrollBox">  
+            <div class="cloud-content-head">
+                <span class="title">xxxx采油厂</span>
+            </div>
+            <div class="row">
+                <div class="col-md-8 col-lg-8">
+                    <div class="col-md-7 col-lg-7">
+                        <p>名称：<span class="edit-property">天津光伏1厂 <i class="fa fa-pencil"></i></span></p>
+                    </div>
+                    <div class="col-md-5 col-lg-5">
+                        <p>当前分组设备：<span>53</span></p>
+                    </div>
+                    <div class="col-md-7 col-lg-7">
+                        <p>描述：<span class="edit-property">天津光伏1厂分组介绍  <i class="fa fa-pencil"></i></span></p>
+                    </div>
+                    <div class="col-md-5 col-lg-5">
+                        <p>当前分组数据点数：<span>53</span></p>
+                    </div>
+                    <div class="col-md-7 col-lg-7">
+                        <p>创建者：<span>张三</span></p>
+                    </div>
+                    <div class="col-md-5 col-lg-5">
+                        <p>总设备树：<span>51460</span></p>
+                    </div>
+                    <div class="col-md-7 col-lg-7">
+                        <p>创建时间：<span>2018-07-14 18:17:32</span></p>
+                    </div>
+                    <div class="col-md-5 col-lg-5">
+                        <p>总数据点：<span>21658861</span></p>
+                    </div>
+                </div>
+                <div class="col-md-4 col-lg-4">
+                    <div class="baiduMaps" id="baiduMaps" style="height: 120px"></div>
+                </div>
+                <div class="col-md-12 col-lg-12">
+                    <div class="cloud-content-table cloud-content-table-device">
+                        <div class="checkbox">
+                            <label>
+                                <input type="checkbox"> 显示分组下全部设备
+                            </label>
+                        </div>
+                        <div class="condition selectpicker-min">
+                            <form class="form-inline">
+                                <div class="form-group">
+                                    <select class="form-control selectpicker name">
+                                        <option>通道名称1</option>
+                                        <option>通道名称2</option>
+                                        <option>通道名称3</option>
+                                        <option>通道名称4</option>
+                                        <option>通道名称5</option>
+                                    </select>
+                                </div>
+                                <div class="form-group">
+                                    <select class="form-control selectpicker type">
+                                        <option>设备类型1</option>
+                                        <option>设备类型2</option>
+                                        <option>设备类型3</option>
+                                        <option>设备类型4</option>
+                                        <option>设备类型5</option>
+                                    </select>
+                                </div>
+                                <div class="form-group">
+                                    <input type="email" class="form-control inputVal" id="inputEmail3" placeholder="">
+                                </div>
+                                <button type="button" class="btn btn-default query">查询</button>
+                            </form>
+                        </div>
+                        <table id="table_device"></table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="myModalAdd" tabindex="-1" role="dialog" aria-labelledby="myModalAddLabel">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal">
+                    <span aria-hidden="true">&times;</span> <span class="sr-only">Close</span>
+                </button>
+                <h5 class="modal-title" id="myModalAddLabel" style="display: inline-block;margin-right:15px">添加数据点</h5>
+                <h6 style="display: inline-block">已勾选的点数：<strong class="checkedCount">0</strong></h6>
+            </div>
+            <div class="modal-body">
+                <div class="row" style="padding-left: 50px;padding-right: 50px;">
+                    <div class="col-md-12 col-lg-12">
+                        <div class="form-group has-feedback">
+                            <input type="text" class="form-control empty" id="keywordAdd" placeholder="搜索">
+                            <span class="glyphicon glyphicon-search form-control-feedback" style="color:#198ccb;"></span>
+                        </div>
+                    </div>
+                    <div class="col-md-12 col-lg-12">
+                        <ul id="tree-addObj" class="ztree scrollBox" style="height: 400px;overflow-y: auto"></ul>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="col-md-2 col-lg-2 btn btn-sm btn-cloud col-lg-offset-4 col-lg-offset-4">确定</button>
+                <button class="col-md-2 col-lg-2 btn btn-sm btn-default" data-dismiss="modal">取消</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="myModalDevice" tabindex="-1" role="dialog" aria-labelledby="myModalDeviceLabel">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal">
+                    <span aria-hidden="true">&times;</span> <span class="sr-only">Close</span>
+                </button>
+                <h5 class="modal-title" id="myModalDeviceLabel">添加分组</h5>
+            </div>
+            <div class="modal-body">
+                <form class="form-horizontal" action="" method="post">
+                    <div class="form-group">
+                        <label class="col-md-2 col-lg-2 control-label">设备类型</label>
+                        <div class="col-md-8 col-lg-8">
+                            <input type="text" class="form-control" name="username" placeholder="必须有数字、字母、下划线"/>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="col-md-2 col-lg-2 control-label">设备描述</label>
+                        <div class="col-md-8 col-lg-8">
+                            <textarea class="form-control" rows="5"></textarea>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="col-md-2 col-lg-2 control-label">类型</label>
+                        <div class="col-md-8 col-lg-8">
+                            <select class="form-control selectpicker" name="country">
+                                <option value="">-- Select a country --</option>
+                                <option value="fr">France</option>
+                                <option value="de">Germany</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="col-md-2 col-lg-2 control-label">厂商</label>
+                        <div class="col-md-8 col-lg-8">
+                            <input type="text" class="form-control" name="username" />
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="col-md-2 col-lg-2 control-label">型号</label>
+                        <div class="col-md-8 col-lg-8">
+                            <input type="text" class="form-control" name="username" />
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button class="col-md-2 col-lg-2 btn btn-sm btn-cloud col-lg-offset-4 col-lg-offset-4">确定</button>
+                <button class="col-md-2 col-lg-2 btn btn-sm btn-default" data-dismiss="modal">取消</button>
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+</html>

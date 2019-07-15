@@ -1,0 +1,232 @@
+.table > tbody > tr > td{
+    border-top: 0px solid #ddd;
+}
+.pagination > .active > a{
+    background-color: #0086ef;
+    border-color: #0086ef;
+}
+.detector-current-table,
+.detector-newAdd-table,
+.detector-whole-table,
+.dataPoint-current-table{
+    margin-top: 10px;
+    table-layout: fixed;
+}
+.detector-current-table tbody tr td,
+.detector-newAdd-table tbody tr td,
+.detector-whole-table tbody tr td,
+.dataPoint-current-table tbody tr td,
+.detector-current-table tbody tr input,
+.dataPoint-current-table tbody tr input{
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+}
+.detector-current-table tr>th:first-child,
+.detector-newAdd-table tr>th:first-child,
+.detector-whole-table tr>th:nth-child(2),
+.dataPoint-current-table tr>th:first-child,
+.detector-current-table tr>td:nth-child(1),
+.detector-newAdd-table tr>td:nth-child(1),
+.detector-whole-table tr>td:nth-child(2),
+.dataPoint-current-table tr>td:nth-child(1){     
+    display: none;
+}
+
+.zone-view .detector-newAdd,
+.zone-view .detector-whole{
+    display: none;
+}
+.zone-view .detector-current .btn.edit-detector,
+.zone-view .detector-current .btn.return-detector,
+.zone-view .detector-newAdd .btn.query-detector{
+    margin-right: 10px;
+}
+.zone-view .detector-current .btn,
+.zone-view .detector-newAdd .btn.query-detector,
+.detector-view .dataPoint-current .btn,
+.zone-view .detector-current .btn:focus,
+.zone-view .detector-newAdd .btn.query-detector:focus,
+.detector-view .dataPoint-current .btn:focus
+{
+    background-color: #3075fe;
+    border-color:#3075fe;
+    color: #fff;
+}
+
+/* detector-current */
+.zone-view .detector-current .return-detector{
+    display: none;
+}
+.zone-view .detector-current .btn>i,
+.detector-view .dataPoint-current .btn>i{
+    color: #fff;
+    margin-right: 10px;
+}
+.zone-view .detector-current th span,
+.detector-view .dataPoint-current th span{
+    color: red;
+}
+.zone-view .detector-current-table input{
+    text-align: center;
+    box-shadow:none;
+    border: 0px solid rgb(204, 204, 204);
+    pointer-events: none;
+}
+.zone-view .detector-current-table input[value=""]{
+   display: none;
+}
+.zone-view .detector-current-table tbody>tr>td:last-child>a,
+.zone-view .detector-newAdd-table tbody>tr>td:last-child>a{
+    color: #3075fe;
+}
+.zone-view .detector-current-table tr>td:last-child>a.tr-save{
+    display: none;
+}
+.zone-view .detector-current-table tr td{
+    vertical-align: middle;
+    padding: 4px!important;
+}
+.zone-view.zone-edit .detector-current .return-detector{
+    display: inline-block;
+}
+.zone-view.zone-edit .detector-current .edit-detector{
+    display: none;
+}
+.zone-view.zone-edit .detector-current-table tr>td:last-child>a.tr-save{
+    display: inline;
+}
+.zone-view.zone-edit .detector-current-table tr>td:last-child>a.tr-untying{
+    display: none;
+}
+.zone-view.zone-edit .detector-current-table input{
+    pointer-events: auto;
+    display: block;
+    border:1px solid #ccc;
+}
+.zone-view.zone-edit .detector-current-table input:focus{
+    border:1px solid #66afe9!important;
+    outline: 0;
+    -webkit-box-shadow: inset 0 1px 1px rgba(0,0,0,.075), 0 0 8px rgba(102, 175, 233, .6);
+    box-shadow: inset 0 1px 1px rgba(0,0,0,.075), 0 0 8px rgba(102, 175, 233, .6);
+}
+.zone-view.zone-add .detector-current{
+    display: none;
+}
+
+/* detector-newAdd */
+.zone-view.zone-add .detector-newAdd,
+.zone-view.zone-add .detector-whole{
+    display: block;
+}
+.zone-view .detector-newAdd .btn.cancel-detector{
+    background-color:#bdcad3!important;
+    border-color: #bdcad3!important;
+}
+.zone-view .detector-newAdd .no-records-found{
+    display: none;
+}
+
+/* detector-whole */
+.zone-view .detector-whole{
+    margin-top: 40px;
+}
+.zone-view .detector-whole .operation .btn.active{
+    outline: none;
+    box-shadow:none;
+    color: #333;
+    background-color: #e6e6e6;
+    border-color: #8c8c8c;
+}
+.zone-view .detector-whole .condition{
+    width: 300px;
+}
+.zone-view .detector-newAdd-table tr td,
+.zone-view .detector-whole-table tr td{
+    vertical-align: middle;
+    height: 42px;
+}
+.zone-view .detector-whole-table tr th:first-child>div{
+    display: none;
+}
+.zone-view .detector-whole-table .bind-tr>td:first-child{
+    cursor: not-allowed;
+}
+.zone-view .detector-whole-table .bind-tr input[type=checkbox]  {  
+    width: 13px;  
+    height: 13px;  
+    pointer-events: none;
+    -webkit-appearance: none;  
+    background-color: red;  
+    border: 1px solid #ccc;
+    background-color: #fff;
+    border-radius: 2px;
+}  
+/* dataPoint-current */
+.detector-view .detector-info{
+    margin-bottom: 20px;
+}
+.detector-view .detector-info>div:not(:last-child){
+    padding-right: 0px;
+}
+.detector-view .detector-info>div>div{
+    text-align: center;
+    background-color: #ecf2fe;
+    height: 30px;
+}
+.detector-view .detector-info div span{
+    line-height: 30px;
+    font-weight: 700;
+}
+.detector-view .dataPoint-current .return-dataPoint,
+.detector-view .dataPoint-current .writeIn-dataPoint{
+    display: none;
+}
+.detector-view .dataPoint-current-table input{
+    text-align: center;
+    box-shadow:none;
+    border: 0px solid rgb(204, 204, 204);
+    pointer-events: none;
+}
+.detector-view .dataPoint-current-table span{
+   cursor:not-allowed;
+}
+.detector-view .dataPoint-current-table span>i.fa-toggle-on{
+    pointer-events: none;
+    color:#32b3c9;
+}
+.detector-view .dataPoint-current-table span>i.fa-toggle-off{
+    pointer-events: none;
+    color:#c5c5c5;
+}
+.detector-view .dataPoint-current-table input[value=""]{
+   display: none;
+}
+.detector-view .dataPoint-current-table tr td{
+    vertical-align: middle;
+    padding: 4px!important;
+}
+.detector-view.detector-edit .dataPoint-current .return-dataPoint,
+.detector-view.detector-edit .dataPoint-current .writeIn-dataPoint{
+    display: inline-block;
+}
+.detector-view.detector-edit .dataPoint-current .edit-dataPoint{
+    display: none;
+}
+.detector-view.detector-edit .dataPoint-current-table span{
+    cursor:pointer;
+ }
+ .detector-view.detector-edit .dataPoint-current-table span>i{
+     pointer-events: auto;
+ }
+.detector-view.detector-edit .dataPoint-current-table input{
+    pointer-events: auto;
+    display: block;
+    border:1px solid #ccc;
+}
+.detector-view.detector-edit .dataPoint-current-table input:focus{
+    border:1px solid #66afe9!important;
+    outline: 0;
+    -webkit-box-shadow: inset 0 1px 1px rgba(0,0,0,.075), 0 0 8px rgba(102, 175, 233, .6);
+    box-shadow: inset 0 1px 1px rgba(0,0,0,.075), 0 0 8px rgba(102, 175, 233, .6);
+}

@@ -1,0 +1,715 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="initial-scale=1.0,maximum-scale=1.0,user-scalable=no" />
+    <link rel="stylesheet" href="../../css/plugins/bootstrap/bootstrap.css">
+    <link rel="stylesheet" href="../../css/plugins/bootstrap/bootstrap-table.css">
+    <link rel="stylesheet" href="../../css/plugins/bootstrap/bootstrap-select.css">
+    <link rel="stylesheet" href="../../css/plugins/bootstrap/fileinput.css">
+    <link rel="stylesheet" href="../../css/plugins/awesome/font-awesome.min.css">
+    <link rel="stylesheet" href="../../css/common/common.css">
+    <link rel="stylesheet" href="../../css/common/navtabs.css">
+    <link rel="stylesheet" href="../../css/common/tables.css">
+    <link rel="stylesheet" href="../../css/common/modals.css">
+    <script type="text/javascript" src='../../js/plugins/jquery/jquery.min.js'></script>
+    <script type='text/javascript' src='../../js/plugins/bootstrap/bootstrap.js'></script>
+    <script type='text/javascript' src='../../js/plugins/bootstrap/bootstrap-table.js'></script>
+    <script type='text/javascript' src='../../js/plugins/bootstrap/bootstrap-table-zh-CN.js'></script>
+    <script type='text/javascript' src='../../js/plugins/bootstrap/fileinput.min.js'></script>
+    <script type='text/javascript' src='../../js/plugins/bootstrap/zh.js'></script>
+    <script type='text/javascript' src='../../js/plugins/bootstrap/bootstrap-select.js'></script>
+    <script type='text/javascript' src='../../js/common/common.js'></script>
+    <script type='text/javascript' src='../../js/common/table.js'></script>
+    <title>网关参数配置</title>
+    <script>
+        $(function(){
+            $('#TCP-table').bootstrapTable({
+                pagination: false,
+                striped:true,
+                classes:'table table-point-i'
+            });
+            $('#serial-table').bootstrapTable({
+                pagination: false,
+                striped:true,
+                classes:'table table-point-i'
+            });
+            function operateFormatterMQTT(value, row, index) {
+                return [
+                    '<div class="btn-group dropright">'+
+                        '<i class="fa fa-ellipsis-h dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"></i>'+
+                        '<ul class="dropdown-menu">'+
+                            '<li><a class="remove" href="javascript:void(0)"><i class="fa fa-trash-o"></i>删除</a></li>'+
+                        '</ul>'+
+                    '</div>'
+                ].join('');
+            }
+            var operateEventsMQTT = {
+                'click .remove': function(e, value, {id}, index) {//点击删除
+                    $('#MQTT-table').bootstrapTable('remove', {
+                        field: 'id',
+                        values: [id]
+                    });
+                }
+            };
+            var tableDataMQTT=[
+                {
+                    id:1,
+                    name: 'OPC1234',
+                    describe: '采集某设备的现场',
+                    user: 'admin',
+                    password:"password",
+                    title:"zhurti",
+                    address:"mqtt.aswe.com",
+                    port:"123456",
+                    encrypt:"是",
+                    interval:"200",
+                    save:"是",
+                    debug:"是",
+                    quality:"1",
+                    root:'<input class="mqtt-genzhengshu" name="mqtt-genzhengshu" type="file" data-show-preview="false">',
+                    certificate:'<input class="mqtt-kezhengshu" name="mqtt-kezhengshu" type="file" data-show-preview="false">',
+                    privacy:'<input class="mqtt-kesimi" name="mqtt-kesimi" type="file" data-show-preview="false">'
+                }
+            ]
+            $('#MQTT-table').bootstrapTable({
+                pagination: false,
+                striped:true,
+                classes:'table table-point-i switchColumns',
+                showColumns:true,
+                columns: [{
+                    field: 'id',
+                    title: '序号',
+                    align:'center',
+                    switchable:false
+                },{
+                    field: 'name',
+                    title: '名称',
+                    align:'center'
+                }, {
+                    field: 'describe',
+                    title: '描述',
+                    align:'center'
+                }, {
+                    field: 'user',
+                    title: '用户名',
+                    align:'center'
+                },{
+                    field: 'password',
+                    title: '密码',
+                    align:'center'
+                }, {
+                    field: 'title',
+                    title: '消息主题',
+                    align:'center'
+                }, {
+                    field: 'address',
+                    title: '服务器地址',
+                    align:'center'
+                },{
+                    field: 'port',
+                    title: '服务器端口',
+                    align:'center'
+                }, {
+                    field: 'encrypt',
+                    title: '是否加密',
+                    align:'center'
+                }, {
+                    field: 'interval',
+                    title: '心跳间隔(秒)',
+                    align:'center',
+                    visible:false
+                }, {
+                    field: 'save',
+                    title: '保存消息',
+                    align:'center',
+                    visible:false
+                }, {
+                    field: 'debug',
+                    title: '开启调试',
+                    align:'center',
+                    visible:false
+                }, {
+                    field: 'quality',
+                    title: '消费质量',
+                    align:'center',
+                    visible:false
+                }, {
+                    field: 'root',
+                    title: '根证书',
+                    align:'center',
+                    visible:false
+                }, {
+                    field: 'certificate',
+                    title: '客户端证书',
+                    align:'center',
+                    visible:false
+                }, {
+                    field: 'privacy',
+                    title: '客户端私密',
+                    align:'center',
+                    visible:false
+                }, {
+                    field: 'operation',
+                    title: '<i class="fa fa-angle-left fa-lg" aria-hidden="true"></i><i class="fa fa-angle-right fa-lg" aria-hidden="true"></i>',
+                    align:'center',
+                    switchable:false,
+                    events: operateEventsMQTT,
+                    formatter: operateFormatterMQTT
+                }],
+                data: tableDataMQTT
+            });
+            $('#HTTP-table').bootstrapTable({
+                pagination: false,
+                striped:true,
+                classes:'table table-point-i'
+            });
+
+            initFileInput("http-genzhengshu","btn btn-default btn-sm");
+            initFileInput("http-kezhengshu","btn btn-default btn-sm");
+            initFileInput("http-kesimi","btn btn-default btn-sm");
+            initFileInput("mqtt-modal","btn btn-default");
+        });
+        //密码隐藏显示
+        $(document).on('click','.dark-textpwd i',function(){
+            $(this).closest('.dark-textpwd').removeClass('dark-textpwd').addClass('plain-textpwd');
+            //明文密码
+            $(this).parent().html('12csdw3 <i class="fa fa-eye"></i>');
+        });
+        $(document).on('click','.plain-textpwd i',function(){
+            $(this).closest('.plain-textpwd ').removeClass('plain-textpwd').addClass('dark-textpwd');
+            //判断密码长度,填写暗文密码
+            $(this).parent().html('******** <i class="fa fa-eye-slash"></i>');
+        });
+        function initFileInput(ctrlName,btn) {
+            var control = $('.' + ctrlName);
+            control.fileinput({
+                language: 'zh', //设置语言
+                //uploadUrl: "upload/insert", //上传的地址
+                //allowedFileExtensions: ['jpg', 'gif', 'png'],//接收的文件后缀
+                //uploadExtraData:{"id": 1, "fileName":'123.mp3'},
+                uploadAsync: true, //默认异步上传
+                showUpload: false, //是否显示上传按钮
+                showRemove : false, //显示移除按钮
+                showPreview : true, //是否显示预览
+                showCaption: true,//是否显示标题
+                browseClass: btn, //按钮样式
+                enctype: 'multipart/form-data',
+                validateInitialCount:true,
+                previewFileIcon: "<i class='glyphicon glyphicon-king'></i>",
+                //msgFilesTooMany: "选择上传的文件数量({n}) 超过允许的最大数值{m}！",
+            }).on('filepreupload', function(event, data, previewId, index) {     //上传中
+                var form = data.form, files = data.files, extra = data.extra,
+                response = data.response, reader = data.reader;
+                console.log('文件正在上传');
+            }).on("fileuploaded", function (event, data, previewId, index) {    //一个文件上传成功
+                console.log('文件上传成功！'+data.id);
+
+            }).on('fileerror', function(event, data, msg) {  //一个文件上传失败
+                console.log('文件上传失败！'+data.id);
+            })
+        }
+    </script>
+</head>
+<body>
+<div class="cloud-container">
+    <div class="cloud-content-l cloud-describe-l">
+        <div class="cloud-describe-content scrollBox">
+            <div class="cloud-describe-backout">
+                <span class="cloud-backout-img"></span>
+                <span class="cloud-backout-title">网关参数配置</span>
+            </div>
+            <div class="container-fluid">
+                <div class="row">
+                    <div class="col-md-12 col-lg-12 col-padleft">
+                        <div class="col-md-3 col-lg-3">
+                            <p>网关名称：<span>串口服务器</span></p>
+                        </div>
+                        <div class="col-md-3 col-lg-3">
+                            <p>网关所属：<span>公共</span></p>
+                        </div>
+                        <div class="col-md-3 col-lg-3">
+                            <p>设备ID：<span>bonc0001</span></p>
+                        </div>
+                    </div>
+                    <div class="col-md-12 col-lg-12 col-padleft">
+                        <div class="col-md-3 col-lg-3">
+                            <p>通讯密码：<span class="dark-textpwd">******** <i class="fa fa-eye-slash"></i></span></p>
+                        </div>
+                        <div class="col-md-3 col-lg-3">
+                            <p>型号：<span>CSDN123</span></p>
+                        </div>
+                        <div class="col-md-3 col-lg-3">
+                            <p>服务器管理地址：<span>10.12.158.130</span></p>
+                        </div>
+                    </div>
+                    <div class="col-md-12 col-lg-12 col-padtop">
+                        <ul class="nav nav-tabs nav-tabs-pills">
+                            <li class="active"><a href="#collect-service" data-toggle="tab">采集服务</a></li>
+                            <li><a href="#data-service" data-toggle="tab">数据服务</a></li>
+                        </ul>
+                        <div class="tab-content tab-content-mg">
+                            <div class="tab-pane active" id="collect-service">
+                                <div class="cloud-content-table">
+                                    <div class="cloud-content-head">
+                                        <span class="title">TCP/IP通道</span>
+                                        <button class="btn btn-default btn-sm" data-toggle="modal" data-target="#myModal1" data-backdrop="static" data-keyboard="false"><i class="fa fa-plus"></i></button>
+                                    </div>
+                                    <table id="TCP-table">
+                                        <thead>
+                                            <tr>
+                                                <th data-align="center">序号</th>
+                                                <th data-align="center">名称</th>
+                                                <th data-align="center">描述</th>
+                                                <th data-align="center">协议</th>
+                                                <th data-align="center">C/S</th>
+                                                <th data-align="center">监听地址</th>
+                                                <th data-align="center">监听端口</th>
+                                                <th data-align="center">操作</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <tr>
+                                                <td>1</td>
+                                                <td>OPC1234</td>
+                                                <td>采集某设备的现场</td>
+                                                <td>OPCDA</td>
+                                                <td>TCP客户端</td>
+                                                <td>1.1.123.156</td>
+                                                <td>15264</td>
+                                                <td>
+                                                    <div class="btn-group dropright">
+                                                        <i class="fa fa-ellipsis-h dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"></i>
+                                                        <ul class="dropdown-menu">
+                                                            <li><a href="#"><i class="fa fa-trash-o"></i>删除</a></li>
+                                                        </ul>
+                                                    </div>
+                                                </td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                                <div class="cloud-content-table">
+                                    <div class="cloud-content-head">
+                                        <span class="title">串行通道</span>
+                                        <button class="btn btn-default btn-sm"><i class="fa fa-plus"></i></button>
+                                    </div>
+                                    <table id="serial-table">
+                                        <thead>
+                                            <tr>
+                                                <th data-align="center">序号</th>
+                                                <th data-align="center">名称</th>
+                                                <th data-align="center">描述</th>
+                                                <th data-align="center">协议</th>
+                                                <th data-align="center">COM</th>
+                                                <th data-align="center">波特率</th>
+                                                <th data-align="center">数据位</th>
+                                                <th data-align="center">校验位</th>
+                                                <th data-align="center">停止位</th>
+                                                <th data-align="center">操作</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <tr>
+                                                <td>1</td>
+                                                <td>OPC1234</td>
+                                                <td>采集某设备的现场</td>
+                                                <td>OPCDA <i class="fa fa-caret-down"></i></td>
+                                                <td>COM1 <i class="fa fa-caret-down"></i></td>
+                                                <td>9600 <i class="fa fa-caret-down"></i></td>
+                                                <td>8 <i class="fa fa-caret-down"></i></td>
+                                                <td>奇校验 <i class="fa fa-caret-down"></i></td>
+                                                <td>1.5位 <i class="fa fa-caret-down"></i></td>
+                                                <td>
+                                                    <div class="btn-group dropright">
+                                                        <i class="fa fa-ellipsis-h dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"></i>
+                                                        <ul class="dropdown-menu">
+                                                            <li><a href="#"><i class="fa fa-trash-o"></i>删除</a></li>
+                                                        </ul>
+                                                    </div>
+                                                </td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                                <div class="col-md-3 col-lg-3 col-lg-offset-4 col-lg-offset-4 tab-content-save">
+                                    <button class="btn btn-cloud btn-block">保存</button>
+                                </div>
+                            </div>
+                            <div class="tab-pane" id="data-service">
+                                <div class="cloud-content-table">
+                                    <div class="cloud-content-head">
+                                        <span class="title">MQTT通道</span>
+                                        <button class="btn btn-default btn-sm" data-toggle="modal" data-target="#myModal2" data-backdrop="static" data-keyboard="false"><i class="fa fa-plus"></i></button>
+                                    </div>
+                                    <table id="MQTT-table">
+                                        <!-- <thead>
+                                            <tr>
+                                                <th data-align="center" data-switchable="false">序号</th>
+                                                <th data-align="center">名称</th>
+                                                <th data-align="center">描述</th>
+                                                <th data-align="center">用户名</th>
+                                                <th data-align="center">密码</th>
+                                                <th data-align="center">消息主题</th>
+                                                <th data-align="center">服务器地址</th>
+                                                <th data-align="center">服务器端口</th>
+                                                <th data-align="center">是否加密</th>
+                                                <th data-align="center" data-visible="false">心跳间隔(秒)</th>
+                                                <th data-align="center" data-visible="false">保存消息</th>
+                                                <th data-align="center" data-visible="false">开启调试</th>
+                                                <th data-align="center" data-visible="false">消费质量</th>
+                                                <th data-align="center" data-visible="false">根证书</th>
+                                                <th data-align="center" data-visible="false">客户端证书</th>
+                                                <th data-align="center" data-visible="false">客户端私密</th>
+                                                <th data-align="center" data-switchable="false"><i class="fa fa-angle-left fa-lg" aria-hidden="true"></i><i class="fa fa-angle-right fa-lg" aria-hidden="true"></i></th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <tr>
+                                                <td>1</td>
+                                                <td>OPC1234</td>
+                                                <td>采集某设备的现场</td>
+                                                <td>admin</td>
+                                                <td>password</td>
+                                                <td>zhurti</td>
+                                                <td>mqtt.aswe.com</td>
+                                                <td>12546</td>
+                                                <td>是 <i class="fa fa-caret-down"></i></td>
+                                                <td>200</td>
+                                                <td>是 <i class="fa fa-caret-down"></i></td>
+                                                <td>是 <i class="fa fa-caret-down"></i></td>
+                                                <td>1 <i class="fa fa-caret-down"></i></td>
+                                                <td>
+                                                    <input class="mqtt-genzhengshu" name="mqtt-genzhengshu" type="file" data-show-preview="false">
+                                                </td>
+                                                <td>
+                                                    <input class="mqtt-kezhengshu" name="mqtt-kezhengshu" type="file" data-show-preview="false">
+                                                </td>
+                                                <td>
+                                                    <input class="mqtt-kesimi" name="mqtt-kesimi" type="file" data-show-preview="false">
+                                                </td>
+                                                <td>
+                                                    <div class="btn-group dropright">
+                                                        <i class="fa fa-ellipsis-h dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"></i>
+                                                        <ul class="dropdown-menu">
+                                                            <li><a href="#"><i class="fa fa-trash-o"></i>删除</a></li>
+                                                        </ul>
+                                                    </div>
+                                                </td>
+                                            </tr>
+                                        </tbody> -->
+                                    </table>
+                                </div>
+                                <div class="cloud-content-table">
+                                    <div class="cloud-content-head">
+                                        <span class="title">HTTP通道</span>
+                                        <button class="btn btn-default btn-sm"><i class="fa fa-plus"></i></button>
+                                    </div>
+                                    <table id="HTTP-table">
+                                        <thead>
+                                            <tr>
+                                                <th data-align="center">序号</th>
+                                                <th data-align="center">名称</th>
+                                                <th data-align="center">描述</th>
+                                                <th data-align="center">客户端ID</th>
+                                                <th data-align="center">服务端地址</th>
+                                                <th data-align="center">服务端接口</th>
+                                                <th data-align="center">是否加密</th>
+                                                <th data-align="center">根证书</th>
+                                                <th data-align="center">客户端证书</th>
+                                                <th data-align="center">客户端私密</th>
+                                                <th data-align="center">操作</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <tr>
+                                                <td>1</td>
+                                                <td>OPC1234</td>
+                                                <td>采集某设备的现场</td>
+                                                <td>OPCDA</td>
+                                                <td>172.16.11.03</td>
+                                                <td>14562</td>
+                                                <td>是 <i class="fa fa-caret-down"></i></td>
+                                                <td>
+                                                    <input class="http-genzhengshu" name="http-genzhengshu" type="file" data-show-preview="false">
+                                                </td>
+                                                <td>
+                                                    <input class="http-kezhengshu" name="http-kezhengshu" type="file" data-show-preview="false">
+                                                </td>
+                                                <td>
+                                                    <input class="http-kesimi" name="http-kesimi" type="file" data-show-preview="false">
+                                                </td>
+                                                <td>
+                                                    <div class="btn-group dropright">
+                                                        <i class="fa fa-ellipsis-h dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"></i>
+                                                        <ul class="dropdown-menu">
+                                                            <li><a href="#"><i class="fa fa-trash-o"></i>删除</a></li>
+                                                        </ul>
+                                                    </div>
+                                                </td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                                <div class="col-md-3 col-lg-3 col-lg-offset-4 col-lg-offset-4 tab-content-save">
+                                    <button class="btn btn-cloud btn-block">保存</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="cloud-content-r cloud-describe">
+        <div class="cloud-describe-detail scrollBox">
+            <div class="cloud-describe-desb">
+                <div class="cloud-describe-title">
+                   <span>网关名称</span>
+                   <span class="pull-right"><i class="fa fa-caret-down"></i></span>
+                </div>
+                <div class="cloud-describe-title-desb">
+                    为了加快对移动设备友好的页面开发工作，利用媒体查询功能并使用这些工具类可以方便的针对不同设备展示或隐藏页面内容。另外还包含了针对打印机显示或隐藏内容的工具类
+                </div>
+            </div>
+            <hr>
+            <div class="cloud-describe-desb">
+                <div class="cloud-describe-title">
+                    <span>网关描述</span>
+                    <span class="pull-right"><i class="fa fa-caret-up"></i></span>
+                </div>
+                <div class="cloud-describe-title-desb cloud-desb-none">
+                    为了加快对移动设备友好的页面开发工作，利用媒体查询功能并使用这些工具类可以方便的针对不同设备展示或隐藏页面内容。另外还包含了针对打印机显示或隐藏内容的工具类
+                </div>
+            </div>
+            <hr>
+            <div class="cloud-describe-desb">
+                <div class="cloud-describe-title">
+                    <span>网关所属</span>
+                    <span class="pull-right"><i class="fa fa-caret-up"></i></span>
+                </div>
+                <div class="cloud-describe-title-desb cloud-desb-none">
+                        为了加快对移动设备友好的页面开发工作，利用媒体查询功能并使用这些工具类可以方便的针对不同设备展示或隐藏页面内容。另外还包含了针对打印机显示或隐藏内容的工具类
+                </div>
+            </div>
+            <hr>
+            <div class="cloud-describe-desb">
+                <div class="cloud-describe-title">
+                    <span>设备ID</span>
+                    <span class="pull-right"><i class="fa fa-caret-up"></i></span>
+                </div>
+                <div class="cloud-describe-title-desb cloud-desb-none">
+                    为了加快对移动设备友好的页面开发工作，利用媒体查询功能并使用这些工具类可以方便的针对不同设备展示或隐藏页面内容。另外还包含了针对打印机显示或隐藏内容的工具类
+                </div>
+            </div>
+            <hr>
+            <div class="cloud-describe-desb">
+                <div class="cloud-describe-title">
+                    <span>通讯密码</span>
+                    <span class="pull-right"><i class="fa fa-caret-up"></i></span>
+                </div>
+                <div class="cloud-describe-title-desb cloud-desb-none">
+                    为了加快对移动设备友好的页面开发工作，利用媒体查询功能并使用这些工具类可以方便的针对不同设备展示或隐藏页面内容。另外还包含了针对打印机显示或隐藏内容的工具类
+                </div>
+            </div>
+            <hr>
+            <div class="cloud-describe-desb">
+                <div class="cloud-describe-title">
+                    <span>管理服务器地址</span>
+                    <span class="pull-right"><i class="fa fa-caret-up"></i></span>
+                </div>
+                <div class="cloud-describe-title-desb cloud-desb-none">
+                    为了加快对移动设备友好的页面开发工作，利用媒体查询功能并使用这些工具类可以方便的针对不同设备展示或隐藏页面内容。另外还包含了针对打印机显示或隐藏内容的工具类
+                </div>
+            </div>
+            <hr>
+        </div>
+        <div class="cloud-shrink-R shrink-moved"></div>
+    </div>
+</div>
+
+<div class="modal fade" id="myModal1" tabindex="-1" role="dialog" aria-labelledby="myModal1Label">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal">
+                    <span aria-hidden="true">&times;</span> <span class="sr-only">Close</span>
+                </button>
+                <h5 class="modal-title" id="myModal1Label">添加TCP/IP通道</h5>
+            </div>
+            <div class="modal-body">
+                <form class="form-horizontal" action="" method="post">
+                    <div class="form-group">
+                        <label class="col-md-2 col-lg-2 control-label">名称</label>
+                        <div class="col-md-8 col-lg-8">
+                            <input type="text" class="form-control" name="username" placeholder="必须有数字、字母、下划线"/>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="col-md-2 col-lg-2 control-label">描述</label>
+                        <div class="col-md-8 col-lg-8">
+                            <textarea class="form-control" rows="5"></textarea>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="col-md-2 col-lg-2 control-label">协议</label>
+                        <div class="col-md-8 col-lg-8">
+                            <select class="form-control selectpicker" name="country">
+                                <option value="">-- Select a country --</option>
+                                <option value="fr">France</option>
+                                <option value="de">Germany</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="col-md-2 col-lg-2 control-label">C/S</label>
+                        <div class="col-md-8 col-lg-8">
+                            <input type="text" class="form-control" name="username" value="123456web"/>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="col-md-2 col-lg-2 control-label">监听地址</label>
+                        <div class="col-md-8 col-lg-8">
+                            <input type="text" class="form-control" name="username" value="123456web"/>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="col-md-2 col-lg-2 control-label">监听端口</label>
+                        <div class="col-md-8 col-lg-8">
+                            <input type="text" class="form-control" name="username" value="123456web"/>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="col-md-2 col-lg-2 control-label">波特率</label>
+                        <div class="col-md-3 col-lg-3">
+                            <select class="form-control selectpicker" name="country">
+                                <option value="">-- Select --</option>
+                                <option value="fr">France</option>
+                                <option value="de">Germany</option>
+                            </select>
+                        </div>
+                        <label class="col-md-2 col-lg-2 control-label">数据位</label>
+                        <div class="col-md-3 col-lg-3">
+                            <select class="form-control selectpicker" name="country">
+                                <option value="">-- Select --</option>
+                                <option value="fr">France</option>
+                                <option value="de">Germany</option>
+                            </select>
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button class="col-md-2 col-lg-2 btn btn-sm btn-cloud col-lg-offset-4 col-lg-offset-4">确定</button>
+                <button class="col-md-2 col-lg-2 btn btn-sm btn-default" data-dismiss="modal">取消</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade bs-example-modal-lg" id="myModal2" tabindex="-1" role="dialog" aria-labelledby="myModal2Label">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal">
+                    <span aria-hidden="true">&times;</span> <span class="sr-only">Close</span>
+                </button>
+                <h5 class="modal-title" id="myModal2Label">添加MQTT通道</h5>
+            </div>
+            <div class="modal-body">
+                <form class="form-horizontal" action="" method="post">
+                    <div class="row">
+                        <div class="col-md-6 col-lg-6">
+                            <div class="form-group">
+                                <label class="col-md-2 col-lg-2 control-label">名称</label>
+                                <div class="col-md-8 col-lg-8">
+                                    <input type="text" class="form-control" name="username" placeholder="必须有数字、字母、下划线"/>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label class="col-md-2 col-lg-2 control-label">描述</label>
+                                <div class="col-md-8 col-lg-8">
+                                    <textarea class="form-control" rows="4"></textarea>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                    <label class="col-md-2 col-lg-2 control-label">用户名</label>
+                                <div class="col-md-8 col-lg-8">
+                                    <input type="text" class="form-control" name="username" placeholder="admin"/>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label class="col-md-2 col-lg-2 control-label">服务器地址</label>
+                                <div class="col-md-8 col-lg-8">
+                                    <input type="text" class="form-control" name="username" placeholder="http://xxxx.com"/>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-6 col-lg-6">
+                            <div class="form-group">
+                                <label class="col-md-2 col-lg-2 control-label">服务器端口</label>
+                                <div class="col-md-8 col-lg-8">
+                                    <input type="text" class="form-control" name="username" placeholder="12503"/>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label class="col-md-2 col-lg-2 control-label">是否加密</label>
+                                <div class="col-md-3 col-lg-3">
+                                    <select class="form-control selectpicker" name="country">
+                                        <option value="">-- Select --</option>
+                                        <option value="fr">France</option>
+                                        <option value="de">Germany</option>
+                                    </select>
+                                </div>
+                                <label class="col-md-2 col-lg-2 control-label">保存消息</label>
+                                <div class="col-md-3 col-lg-3">
+                                    <select class="form-control selectpicker" name="country">
+                                        <option value="">-- Select --</option>
+                                        <option value="fr">France</option>
+                                        <option value="de">Germany</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label class="col-md-2 col-lg-2 control-label">开启调试</label>
+                                <div class="col-md-3 col-lg-3">
+                                    <select class="form-control selectpicker" name="country">
+                                        <option value="">-- Select --</option>
+                                        <option value="fr">France</option>
+                                        <option value="de">Germany</option>
+                                    </select>
+                                </div>
+                                <label class="col-md-2 col-lg-2 control-label">消费质量</label>
+                                <div class="col-md-3 col-lg-3">
+                                    <select class="form-control selectpicker" name="country">
+                                        <option value="">-- Select --</option>
+                                        <option value="fr">France</option>
+                                        <option value="de">Germany</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label class="col-md-2 col-lg-2 control-label">心跳间隔(秒)</label>
+                                <div class="col-md-8 col-lg-8">
+                                    <input type="text" class="form-control" name="username" value="200"/>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label class="col-md-2 col-lg-2 control-label">根证书</label>
+                                <div class="col-md-8 col-lg-8">
+                                    <input type="file" class="form-control mqtt-modal" name="mqtt-modal" value="123456web" data-show-preview="false"/>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button class="col-md-2 col-lg-2 btn btn-sm btn-cloud col-lg-offset-4 col-lg-offset-4">确定</button>
+                <button class="col-md-2 col-lg-2 btn btn-sm btn-default" data-dismiss="modal">取消</button>
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+</html>

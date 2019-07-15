@@ -1,0 +1,313 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="initial-scale=1.0,maximum-scale=1.0,user-scalable=no" />
+    <link rel="stylesheet" href="../../css/plugins/bootstrap/bootstrap.css">
+    <link rel="stylesheet" href="../../css/plugins/bootstrap/bootstrap-table.css">
+    <link rel="stylesheet" href="../../css/plugins/bootstrap/bootstrap-select.css">
+    <link rel="stylesheet" href="../../css/plugins/awesome/font-awesome.min.css">
+    <link rel="stylesheet" href="../../css/common/common.css">
+    <link rel="stylesheet" href="../../css/common/tables.css">
+    <link rel="stylesheet" href="../../css/common/navtabs.css">
+    <script type="text/javascript" src='../../js/plugins/jquery/jquery.min.js'></script>
+    <script type='text/javascript' src='../../js/plugins/bootstrap/bootstrap.js'></script>
+    <script type='text/javascript' src='../../js/plugins/bootstrap/bootstrap-table.js'></script>
+    <script type='text/javascript' src='../../js/plugins/bootstrap/bootstrap-table-zh-CN.js'></script>
+    <script type='text/javascript' src='../../js/plugins/bootstrap/bootstrap-select.js'></script>
+    <!-- <script type='text/javascript' src='../../js/plugins/bootstrap/defaults-zh_CN.min.js'></script> -->
+    <script type='text/javascript' src='../../js/common/common.js'></script>
+    <script type="text/javascript" src='../../js/plugins/echarts/echarts.min.js'></script>
+    <script type="text/javascript" src='../../js/common/echartsChart.js'></script>
+    <script type="text/javascript" src="http://api.map.baidu.com/api?v=3.0&ak=IcEakKA5CcH3sIqLpSxKu6ymZNXdNLKe"></script>
+    <title>网关管理</title>
+</head>
+<body>
+<div class="cloud-container">
+    <div class="cloud-content-l cloud-menu">
+        <nav class="cloud-Lbar scrollBox" role="navigation">
+            <ul class="acc-menu">
+                <li class="treeview"><span>接入数据</span></li>
+                <li class="treeview active"><a href=""><span>网管管理</span></a></li>
+                <li class="treeview"><a href=""><span>数据源管理</span></a></li>
+                <li class="treeview"><a href=""><span>分组管理</span></a></li>
+                <li class="treeview"><a href=""><span>设备管理</span></a></li>
+                <li class="treeview"><a href=""><span>工作空间</span></a></li>
+            </ul>
+        </nav>
+        <div class="cloud-shrink-L shrink-moved"></div>
+    </div>
+    <div class="cloud-content-r cloud-menu-r">
+        <div class="cloud-menu-content scrollBox">  
+            <div class="cloud-content-head">
+                <span class="title">网关管理</span>
+                <button class="btn btn-default btn-sm"><i class="fa fa-plus"></i><span class="add">添加网关</span></button>
+            </div>
+            <div class="cloud-content-chart">
+                <div class="row">
+                    <div class="col-md-4 col-lg-4">
+                        <ul class="nav nav-tabs nav-tabs-slide">
+                            <li class="active"><a href="#personal1" data-toggle="tab">个人</a></li>
+                            <li><a href="#public1" data-toggle="tab">公共</a></li>
+                        </ul>
+                        <div class="tab-content">
+                            <div class="tab-pane active" id="personal1">个人</div>
+                            <div class="tab-pane" id="public1">公共</div>
+                        </div>
+                    </div>
+                    <div class="col-md-4 col-lg-4">
+                        <ul class="nav nav-tabs nav-tabs-slide">
+                            <li class="active"><a href="#personal2" data-toggle="tab">个人</a></li>
+                            <li><a href="#public2" data-toggle="tab">公共</a></li>
+                        </ul>
+                        <div class="tab-content">
+                            <div class="tab-pane active" id="personal2">个人</div>
+                            <div class="tab-pane" id="public2">公共</div>
+                        </div>
+                    </div>
+                    <div class="col-md-4 col-lg-4">
+                        <div class="baiduMaps" id="baiduMaps"></div>
+                    </div>
+                </div>
+            </div>
+            <div class="cloud-content-table cloud-content-table-gateway">
+                <div class="condition selectpicker-min">
+                    <form class="form-inline">
+                        <div class="form-group">
+                            <select class="form-control selectpicker type">
+                                <option>网关类型1</option>
+                                <option>网关类型2</option>
+                                <option>网关类型3</option>
+                                <option>网关类型4</option>
+                                <option>网关类型5</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <select class="form-control selectpicker belongs">
+                                <option>网关所属1</option>
+                                <option>网关所属2</option>
+                                <option>网关所属3</option>
+                                <option>网关所属4</option>
+                                <option>网关所属5</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <input type="email" class="form-control inputVal" id="inputEmail3" placeholder="">
+                        </div>
+                        <button type="button" class="btn btn-default query">查询</button>
+                    </form>
+                </div>
+                <table id="table_gateway"></table>
+            </div>
+        </div>
+</div>
+<script>
+    $(function(){
+        /* 饼图调用 */
+        var personal1Data=[["在线网关","200"],["离线网关","19"]];
+        var personal1Color=[ '#1a8ccb', '#7a8ba9'];
+        $("#personal1").ringChart(personal1Data,personal1Color);
+
+        var personal2Data=[["Cloudiip Link","123"],["DTU","56"],["RTU","19"]];
+        var personal2Color=[ '#30b0d5', '#4bcb81', '#52708a'];
+        $("#personal2").ringChart(personal2Data,personal2Color);
+
+        /* 百度地图调用 */
+        function myFun(result){
+            /* result.center.lng=116.480343;
+            result.center.lat=40.026989; */
+            var map = new BMap.Map("baiduMaps");// 创建地图实例  
+            var point = new BMap.Point(result.center.lng, result.center.lat);// 创建点坐标  
+            map.centerAndZoom(point, 15);// 初始化地图，设置中心点坐标和地图级别 
+            map.enableScrollWheelZoom(true);     //开启鼠标滚轮缩放
+            var opts = {type: BMAP_NAVIGATION_CONTROL_SMALL,anchor:BMAP_ANCHOR_BOTTOM_LEFT}    
+            map.addControl(new BMap.NavigationControl(opts));
+            map.addControl(new BMap.MapTypeControl()); 
+            /* 添加标注 */
+            var mk = new BMap.Marker(result.center);
+			map.addOverlay(mk);
+        }
+        var myCity = new BMap.LocalCity();
+        myCity.get(myFun); 
+        /* 表格调用 */
+        const $tableGateway = $('#table_gateway');
+        const $tableGatewayPa=$('.cloud-content-table-gateway');
+        const tableDataGateway=[{
+            id:0,
+            name: '1_project_create_time',
+            describe: '应用程序内核版本',
+            type: 'cloudlip-link',
+            state: '&radic;',
+            number:1,
+            dataPoint:1,
+            belongs:"个人",
+            time:"2018-07-14 18:17:19"
+        }, {
+            id:1,
+            name: '2_project_create_time',
+            describe: '应用程序内核版本',
+            type: 'cloudlip-link',
+            state:'&times;',
+            number:1,
+            dataPoint:1,
+            belongs:"个人",
+            time:"2018-07-14 18:17:19"
+        },{
+            id:2,
+            name: '3_project_create_time',
+            describe: '应用程序内核版本',
+            type: 'cloudlip-link',
+            state:'&times;',
+            number:1,
+            dataPoint:1,
+            belongs:"个人",
+            time:"2018-07-14 18:17:19"
+        }, {
+            id:3,
+            name: '4_project_create_time',
+            describe: '应用程序内核版本',
+            type: 'cloudlip-link',
+            state:'&radic;',
+            number:1,
+            dataPoint:1,
+            belongs:"个人",
+            time:"2018-07-14 18:17:19"
+        },{
+            id:4,
+            name: '5_project_create_time',
+            describe: '应用程序内核版本',
+            type: 'cloudlip-link',
+            state:'&radic;',
+            number:1,
+            dataPoint:1,
+            belongs:"个人",
+            time:"2018-07-14 18:17:19"
+        }, {
+            id:5,
+            name: '6_project_create_time',
+            describe: '应用程序内核版本',
+            type: 'cloudlip-link',
+            state:'&radic;',
+            number:1,
+            dataPoint:1,
+            belongs:"个人",
+            time:"2018-07-14 18:17:19"
+        },{
+            id:6,
+            name: '7_project_create_time',
+            describe: '应用程序内核版本',
+            type: 'cloudlip-link',
+            state:'&times;',
+            number:1,
+            dataPoint:1,
+            belongs:"个人",
+            time:"2018-07-14 18:17:19"
+        }, {
+            id:7,
+            name: '8_project_create_time',
+            describe: '应用程序内核版本',
+            type: 'cloudlip-link',
+            state:'&times;',
+            number:1,
+            dataPoint:1,
+            belongs:"个人",
+            time:"2018-07-14 18:17:19"
+        },{
+            id:8,
+            name: '9_project_create_time',
+            describe: '应用程序内核版本',
+            type: 'cloudlip-link',
+            state:'&times;',
+            number:1,
+            dataPoint:1,
+            belongs:"个人",
+            time:"2018-07-14 18:17:19"
+        }]
+        
+        function operateFormatterGateway(value, row, index) {
+            return [
+                '<div class="btn-group dropright">'+
+                    '<i class="fa fa-ellipsis-h dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"></i>'+
+                    '<ul class="dropdown-menu">'+
+                        '<li><a class="edit" href="javascript:void(0)"><i class="fa fa-pencil"></i>编辑</a></li>'+
+                        '<li><a class="look" href="javascript:void(0)"><i class="fa fa-search"></i>查看</a></li>'+
+                        '<li><a class="remove" href="javascript:void(0)"><i class="fa fa-trash-o"></i>删除</a></li>'+
+                    '</ul>'+
+                '</div>'
+            ].join('');
+        }
+        window.operateEventsGateway = {
+            'click .edit': function (e, value, row, index) {//点击编辑
+                alert(`You click edit action, row: ${JSON.stringify(row)}`);
+            },
+            'click .look': function (e, value, row, index) {//点击查看
+                alert(`You click look action, row: ${JSON.stringify(row)}`);
+            },
+            'click .remove': function(e, value, {id}, index) {//点击删除
+                $tableGateway.bootstrapTable('remove', {
+                    field: 'id',
+                    values: [id]
+                });
+            }
+        };
+        $tableGatewayPa.find(".query").click(function(){//点击查询
+            var type=$(this).closest(".condition").find(".type option:selected").text();
+            var belongs=$(this).closest(".condition").find(".belongs option:selected").text();
+            var text=$(this).closest(".condition").find(".inputVal").val();
+            $tableGateway.bootstrapTable('refresh', {
+                    silent: true,
+                    url: newUrl,
+                    query: {type: "type",belongs:"belongs",text:"text"}
+            });
+        });
+        $tableGateway.bootstrapTable({
+            pagination: true,                   //是否显示分页（*）
+            pageList: [5, 15, 25, 100],        //可供选择的每页的行数（*）
+            striped:true,
+            pageSize:5,
+            classes:'table table-point-i',
+            columns: [{
+                field: 'name',
+                title: '名称',
+                align:'center'
+            }, {
+                field: 'describe',
+                title: '描述',
+                align:'center'
+            }, {
+                field: 'type',
+                title: '网关类型',
+                align:'center'
+            },{
+                field: 'state',
+                title: '网关状态',
+                align:'center'
+            }, {
+                field: 'number',
+                title: '通道数量',
+                align:'center'
+            }, {
+                field: 'dataPoint',
+                title: '数据点',
+                align:'center'
+            },{
+                field: 'belongs',
+                title: '网关所属',
+                align:'center'
+            }, {
+                field: 'time',
+                title: '时间',
+                align:'center'
+            }, {
+                field: 'operation',
+                title: '操作',
+                align:'center',
+                events: operateEventsGateway,
+                formatter: operateFormatterGateway
+            }],
+            data: tableDataGateway
+        });
+    })
+</script>
+</body>
+</html>

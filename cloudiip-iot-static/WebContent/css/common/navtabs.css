@@ -1,0 +1,38 @@
+/* 小标签页 */
+.nav-tabs-slide.nav-tabs>li>a,
+.nav-tabs-slide.nav-tabs>li>a:focus,
+.nav-tabs-slide.nav-tabs>li>a:hover {
+    color: #333;
+    background-color: transparent;
+    border: transparent;
+}
+.nav-tabs-slide.nav-tabs>li.active>a,
+.nav-tabs-slide.nav-tabs>li.active>a:focus,
+.nav-tabs-slide.nav-tabs>li.active>a:hover {
+    color: #198ccb;
+    background-color: transparent;
+    border: transparent;
+    border-bottom: 3px solid #198ccb;
+}
+/*胶囊式切换*/
+ .nav-tabs.nav-tabs-pills>li>a{
+    margin-right: -1px;
+    border-left: 1px solid #ddd;
+    border-right: 1px solid #ddd;
+    border-top: 1px solid #ddd;
+    border-radius: 0;
+    background-color: #eef1f6;
+    margin-bottom: -1px;
+}
+.nav-tabs.nav-tabs-pills>li.active>a, 
+.nav-tabs.nav-tabs-pills>li.active>a:focus,
+.nav-tabs.nav-tabs-pills>li.active>a:hover {
+    background-color: #fff;
+    border-top: 3px solid #198ccb;
+}
+.nav-tabs.nav-tabs-pills>li>a:hover {
+    border-bottom-color: transparent;
+}
+.nav.nav-tabs-pills>li>a {
+    padding: 10px 36px;
+}

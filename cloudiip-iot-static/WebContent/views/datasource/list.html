@@ -1,0 +1,1141 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="initial-scale=1.0,maximum-scale=1.0,user-scalable=no" />
+    <link rel="stylesheet" href="../../css/plugins/bootstrap/bootstrap.css">
+    <link rel="stylesheet" href="../../css/plugins/bootstrap/bootstrap-table.css">
+    <link rel="stylesheet" href="../../css/plugins/bootstrap/bootstrap-select.css">
+    <link rel="stylesheet" href="../../css/plugins/awesome/font-awesome.min.css">
+    <link rel="stylesheet" href="../../css/common/common.css">
+    <link rel="stylesheet" href="../../css/common/navtabs.css">
+    <link rel="stylesheet" href="../../css/common/tables.css">
+    <link rel="stylesheet" href="../../css/common/modals.css">
+    <link rel="stylesheet" href="../../css/common/forms.css">
+    <link rel="stylesheet" href="../../js/plugins/layui/css/layui.css">
+    <script type="text/javascript" src='../../js/plugins/jquery/jquery.min.js'></script>
+    <script type='text/javascript' src='../../js/plugins/bootstrap/bootstrap.js'></script>
+    <script type='text/javascript' src='../../js/plugins/bootstrap/bootstrap-table.js'></script>
+    <script type='text/javascript' src='../../js/plugins/bootstrap/bootstrap-table-zh-CN.js'></script>
+    <script type='text/javascript' src='../../js/plugins/bootstrap/bootstrap-select.js'></script>
+    <script type='text/javascript' src='../../js/common/common.js'></script>
+    <script type='text/javascript' src='../../js/common/table.js'></script>
+    <script type="text/javascript" src='../../js/plugins/echarts/echarts.min.js'></script>
+    <script type="text/javascript" src='../../js/common/echartsChart.js'></script>
+    <script type="text/javascript" src='../../js/plugins/layui/layui.js'></script>
+    <title>OPC数据点</title>
+</head>
+<body>
+<div class="cloud-container">
+    <div class="cloud-content-l cloud-describe-l">
+        <div class="cloud-describe-content scrollBox">
+            <div class="cloud-describe-backout">
+                <span class="cloud-backout-img"></span>
+                <span class="cloud-backout-title">OPC数据点</span>
+            </div>
+            <div class="container-fluid">
+                <div class="row">
+                    <div class="col-md-12 col-lg-12 col-padleft">
+                        <div class="col-md-3 col-lg-3">
+                            <p>数据源名称：<span>串口服务器</span></p>
+                        </div>
+                        <div class="col-md-3 col-lg-3">
+                            <p>采集通道：<span>公共</span></p>
+                        </div>
+                        <div class="col-md-3 col-lg-3">
+                            <p>协议：<span>bonc0001</span></p>
+                        </div>
+                    </div>
+                    <div class="col-md-12 col-lg-12 col-padleft">
+                        <div class="col-md-3 col-lg-3">
+                            <p>CLASS ID：<span>asdfdks-123423432hvdt45yt8v-fsd</span></p>
+                        </div>
+                        <div class="col-md-3 col-lg-3">
+                            <p>Device ID：<span>CSDN123</span></p>
+                        </div>
+                        <div class="col-md-3 col-lg-3">
+                            <p>数据源描述：<span>10.12.158.130</span></p>
+                        </div>
+                    </div>
+                    <div class="col-md-12 col-lg-12 col-padtop">
+                        <ul class="nav nav-tabs nav-tabs-pills">
+                            <li class="active"><a href="#data-conf" data-toggle="tab">数据点配置</a></li>
+                            <li><a href="#data-monitor" data-toggle="tab">数据点监视</a></li>
+                        </ul>
+                        <div class="tab-content tab-content-mg">
+                            <div class="tab-pane active" id="data-conf">
+                                <div class="cloud-content-table cloud-content-table-conf">
+                                    <div class="operation">
+                                        <button type="button" class="btn btn-default" data-toggle="modal" data-target="#myModalAdd" data-backdrop="static" data-keyboard="false"><i class="fa fa-plus"></i>添加</button>
+                                        <button type="button" class="btn btn-default remove"><i class="fa fa-trash-o"></i>删除</button>
+                                        <button type="button" class="btn btn-default import"><i class="fa fa-download"></i>导入</button>
+                                        <button type="button" class="btn btn-default export"><i class="fa fa-upload"></i>导出</button>
+                                        <button type="button" class="btn btn-default scan" data-toggle="modal" data-target="#myModalScan" data-backdrop="static" data-keyboard="false"><span></span>扫描</button>
+                                        <button type="button" class="btn btn-default device"><i class="fa fa-plus"></i>添加设备树</button>
+                                    </div>
+                                    <div class="condition selectpicker-min">
+                                        <form class="form-inline">
+                                            <div class="form-group">
+                                                <select class="form-control selectpicker field">
+                                                    <option>字段选择1</option>
+                                                    <option>字段选择2</option>
+                                                    <option>字段选择3</option>
+                                                    <option>字段选择4</option>
+                                                    <option>字段选择5</option>
+                                                </select>
+                                            </div>
+                                            <div class="form-group">
+                                                <input type="email" class="form-control inputVal" id="inputEmail3" placeholder="">
+                                            </div>
+                                            <button type="button" class="btn btn-default query">查询</button>
+                                        </form>
+                                    </div>
+                                    <table id="table_conf"></table>
+                                </div>
+                            </div>
+                            <div class="tab-pane" id="data-monitor">
+                                <div class="cloud-content-table cloud-content-table-monitor">
+                                    <div class="operation">
+                                        <button type="button" class="btn btn-default export"><i class="fa fa-upload"></i>导出</button>
+                                    </div>
+                                    <div class="condition selectpicker-min">
+                                        <form class="form-inline">
+                                            <div class="form-group">
+                                                <select class="form-control selectpicker field">
+                                                    <option>字段选择1</option>
+                                                    <option>字段选择2</option>
+                                                    <option>字段选择3</option>
+                                                    <option>字段选择4</option>
+                                                    <option>字段选择5</option>
+                                                </select>
+                                            </div>
+                                            <div class="form-group">
+                                                <input type="email" class="form-control inputVal" id="inputEmail3" placeholder="">
+                                            </div>
+                                            <button type="button" class="btn btn-default query">查询</button>
+                                        </form>
+                                    </div>
+                                    <table id="table_monitor"></table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="cloud-content-r cloud-describe">
+        <div class="cloud-describe-detail scrollBox">
+            <div class="cloud-describe-desb">
+                <div class="cloud-describe-title">
+                   <span>网关名称</span>
+                   <span class="pull-right"><i class="fa fa-caret-down"></i></span>
+                </div>
+                <div class="cloud-describe-title-desb">
+                    为了加快对移动设备友好的页面开发工作，利用媒体查询功能并使用这些工具类可以方便的针对不同设备展示或隐藏页面内容。另外还包含了针对打印机显示或隐藏内容的工具类
+                </div>
+            </div>
+            <hr>
+            <div class="cloud-describe-desb">
+                <div class="cloud-describe-title">
+                    <span>网关描述</span>
+                    <span class="pull-right"><i class="fa fa-caret-up"></i></span>
+                </div>
+                <div class="cloud-describe-title-desb cloud-desb-none">
+                    为了加快对移动设备友好的页面开发工作，利用媒体查询功能并使用这些工具类可以方便的针对不同设备展示或隐藏页面内容。另外还包含了针对打印机显示或隐藏内容的工具类
+                </div>
+            </div>
+            <hr>
+            <div class="cloud-describe-desb">
+                <div class="cloud-describe-title">
+                    <span>网关所属</span>
+                    <span class="pull-right"><i class="fa fa-caret-up"></i></span>
+                </div>
+                <div class="cloud-describe-title-desb cloud-desb-none">
+                        为了加快对移动设备友好的页面开发工作，利用媒体查询功能并使用这些工具类可以方便的针对不同设备展示或隐藏页面内容。另外还包含了针对打印机显示或隐藏内容的工具类
+                </div>
+            </div>
+            <hr>
+            <div class="cloud-describe-desb">
+                <div class="cloud-describe-title">
+                    <span>设备ID</span>
+                    <span class="pull-right"><i class="fa fa-caret-up"></i></span>
+                </div>
+                <div class="cloud-describe-title-desb cloud-desb-none">
+                    为了加快对移动设备友好的页面开发工作，利用媒体查询功能并使用这些工具类可以方便的针对不同设备展示或隐藏页面内容。另外还包含了针对打印机显示或隐藏内容的工具类
+                </div>
+            </div>
+            <hr>
+            <div class="cloud-describe-desb">
+                <div class="cloud-describe-title">
+                    <span>通讯密码</span>
+                    <span class="pull-right"><i class="fa fa-caret-up"></i></span>
+                </div>
+                <div class="cloud-describe-title-desb cloud-desb-none">
+                    为了加快对移动设备友好的页面开发工作，利用媒体查询功能并使用这些工具类可以方便的针对不同设备展示或隐藏页面内容。另外还包含了针对打印机显示或隐藏内容的工具类
+                </div>
+            </div>
+            <hr>
+            <div class="cloud-describe-desb">
+                <div class="cloud-describe-title">
+                    <span>管理服务器地址</span>
+                    <span class="pull-right"><i class="fa fa-caret-up"></i></span>
+                </div>
+                <div class="cloud-describe-title-desb cloud-desb-none">
+                    为了加快对移动设备友好的页面开发工作，利用媒体查询功能并使用这些工具类可以方便的针对不同设备展示或隐藏页面内容。另外还包含了针对打印机显示或隐藏内容的工具类
+                </div>
+            </div>
+            <hr>
+        </div>
+        <div class="cloud-shrink-R shrink-moved"></div>
+    </div>
+</div>
+
+<div class="modal fade bs-example-modal-lg" id="myModalAdd" tabindex="-1" role="dialog" aria-labelledby="myModalAddLabel">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal">
+                    <span aria-hidden="true">&times;</span> <span class="sr-only">Close</span>
+                </button>
+                <h5 class="modal-title" id="myModalAddLabel">添加数据点</h5>
+            </div>
+            <div class="modal-body">
+                <form class="form-horizontal" action="" method="post">
+                    <div class="row">
+                        <div class="col-md-6 col-lg-6">
+                            <div class="form-group">
+                                <label class="col-md-2 col-lg-2 control-label">数据点名称</label>
+                                <div class="col-md-8 col-lg-8">
+                                    <input type="text" class="form-control" name="username" placeholder="必须有数字、字母、下划线"/>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label class="col-md-2 col-lg-2 control-label">数据源描述</label>
+                                <div class="col-md-8 col-lg-8">
+                                    <textarea class="form-control" rows="5"></textarea>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                    <label class="col-md-2 col-lg-2 control-label">Group</label>
+                                <div class="col-md-8 col-lg-8">
+                                    <input type="text" class="form-control" name="username"/>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label class="col-md-2 col-lg-2 control-label">Tag</label>
+                                <div class="col-md-8 col-lg-8">
+                                    <input type="text" class="form-control" name="username" />
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-6 col-lg-6">
+                            <div class="form-group">
+                                <div class="checkbox col-md-11 col-lg-11">
+                                    <label>
+                                        <input type="checkbox">量程变化
+                                    </label>
+                                    <div class="col-md-9 col-lg-9 checkbox-dividing-line"></div>
+                                </div>
+                                <label class="col-md-2 col-lg-2 control-label">量程最大值</label>
+                                <div class="col-md-3 col-lg-3">
+                                    <input type="text" class="form-control" name="username" value=""/>
+                                </div>
+                                <label class="col-md-3 col-lg-3 control-label">采集值最大值</label>
+                                <div class="col-md-3 col-lg-3">
+                                    <input type="text" class="form-control" name="username" value=""/>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <div class="checkbox col-md-11 col-lg-11">
+                                    <label>
+                                        <input type="checkbox">数据有效范围过滤
+                                    </label>
+                                    <div class="col-md-8 col-lg-8 checkbox-dividing-line"></div>
+                                </div>
+                                <label class="col-md-2 col-lg-2 control-label">量程最小值</label>
+                                <div class="col-md-3 col-lg-3">
+                                    <input type="text" class="form-control" name="username" value=""/>
+                                </div>
+                                <label class="col-md-3 col-lg-3 control-label">采集值最小值</label>
+                                <div class="col-md-3 col-lg-3">
+                                    <input type="text" class="form-control" name="username" value=""/>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label class="col-md-2 col-lg-2 control-label">量程最小值</label>
+                                <div class="col-md-3 col-lg-3">
+                                    <input type="text" class="form-control" name="username" value=""/>
+                                </div>
+                                <label class="col-md-3 col-lg-3 control-label">数据值最大值</label>
+                                <div class="col-md-3 col-lg-3">
+                                    <input type="text" class="form-control" name="username" value=""/>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <div class="checkbox col-md-11 col-lg-11">
+                                    <label>自定义公式</label>
+                                    <div class="col-md-9 col-lg-9 checkbox-dividing-line"></div>
+                                </div>
+                                <label class="col-md-2 col-lg-2 control-label">=</label>
+                                <div class="col-md-9 col-lg-9">
+                                    <input type="text" class="form-control" name="username" value=""/>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button class="col-md-2 col-lg-2 btn btn-sm btn-cloud col-lg-offset-4 col-lg-offset-4 append">确定</button>
+                <button class="col-md-2 col-lg-2 btn btn-sm btn-default" data-dismiss="modal">取消</button>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="modal fade bs-example-modal-lg" id="myModalView" tabindex="-1" role="dialog" aria-labelledby="myModalViewLabel">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal">
+                    <span aria-hidden="true">&times;</span> <span class="sr-only">Close</span>
+                </button>
+                <h5 class="modal-title" id="myModalViewLabel">OPC2334数据点状态</h5>
+            </div>
+            <div class="modal-body">
+                <div class="container-fluid">
+                    <div class="row">
+                        <div class="col-md-12 col-lg-12 col-child-padleft">
+                            <div class="col-md-4 col-lg-4">
+                                <p>数据点名称：<span>OPC2334</span></p>
+                            </div>
+                            <div class="col-md-4 col-lg-4">
+                                <p>Server：<span>KepwareEx</span></p>
+                            </div>
+                            <div class="col-md-4 col-lg-4">
+                                <p>Group：<span>Channel_1</span></p>
+                            </div>
+                        </div>
+                        <div class="col-md-12 col-lg-12 col-child-padleft">
+                            <div class="col-md-4 col-lg-4">
+                                <p>Tag：<span>Ramp1</span></p>
+                            </div>
+                            <div class="col-md-4 col-lg-4">
+                                <p>当前值：<span>3.1415</span></p>
+                            </div>
+                            <div class="col-md-4 col-lg-4">
+                                <p>变换值：<span>3.1415</span></p>
+                            </div>
+                        </div>
+                        <div class="col-md-12 col-lg-12 col-child-padleft">
+                            <div class="col-md-4 col-lg-4">
+                                <p>最后更新时间：<span>2018-07-14 18:17:19</span></p>
+                            </div>
+                            <div class="col-md-4 col-lg-4">
+                                <p>采集量：<span>12563</span></p>
+                            </div>
+                            <div class="col-md-4 col-lg-4">
+                                <p>数据点描述：<span>某某某数据源</span></p>
+                            </div>
+                        </div>
+                        <div class="col-md-12 col-lg-12 col-child-padleft cloud-content-table">
+                            <div class="operation">
+                                <button type="button" class="btn btn-default export"><i class="fa fa-download"></i>下载数据</button>
+                            </div>
+                            <div class="condition">
+                                <div class="layui-inline">
+                                    <div class="layui-input-inline">
+                                        <input type="text" class="layui-input" id="datetime" placeholder="">
+                                    </div>
+                                </div>
+                                <button type="button" class="btn btn-default query">查询</button>
+                            </div>
+                        </div>
+                        <div id="areaChart" style="height: 300px;float:left;width: 100%"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="modal fade bs-example-modal-lg" id="myModalScan" tabindex="-1" role="dialog" aria-labelledby="myModalScanLabel">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal">
+                    <span aria-hidden="true">&times;</span> <span class="sr-only">Close</span>
+                </button>
+                <h5 class="modal-title" id="myModalScanLabel">数据点扫描结果</h5>
+            </div>
+            <div class="modal-body">
+                <div class="container-fluid">
+                    <div class="row">
+                        <div class="col-md-12 col-lg-12 col-child-padleft">
+                            <div class="col-md-4 col-lg-4">
+                                <p>数据源名称：<span>某某某数据源</span></p>
+                            </div>
+                            <div class="col-md-4 col-lg-4">
+                                <p>采集通道<span>Local</span></p>
+                            </div>
+                            <div class="col-md-4 col-lg-4">
+                                <p>协议：<span>OPC</span></p>
+                            </div>
+                        </div>
+                        <div class="col-md-12 col-lg-12 col-child-padleft">
+                            <div class="col-md-4 col-lg-4">
+                                <p>CLASS ID：<span>tydre56r76-hiug78t78t8-guigu-78t87guighiug-h87g8</span></p>
+                            </div>
+                            <div class="col-md-4 col-lg-4">
+                                <p>站点地址：<span>10.12.123.158:135</span></p>
+                            </div>
+                            <div class="col-md-4 col-lg-4">
+                                <p>数据源描述：<span>某某某数据源</span></p>
+                            </div>
+                        </div>
+                        <div class="col-md-12 col-lg-12 col-child-padleft cloud-content-table cloud-content-table-scan">
+                            <div class="operation">
+                                <button type="button" class="btn btn-default remove"><i class="fa fa-trash-o"></i>删除</button>
+                                <button type="button" class="btn btn-default export"><i class="fa fa-upload"></i>导出</button>
+                                <button type="button" class="btn btn-default device"><i class="fa fa-plus"></i>添加设备树</button>
+                            </div>
+                            <div class="tips">
+                                <span>重叠数据点<strong>3000</strong>,&nbsp;&nbsp;新增数据点<strong>200</strong>,&nbsp;&nbsp;消失数据点<strong>100</strong></span>
+                            </div>
+                            <div class="condition selectpicker-min">
+                                <form class="form-inline">
+                                    <div class="form-group">
+                                        <select class="form-control selectpicker field">
+                                            <option>字段选择1</option>
+                                            <option>字段选择2</option>
+                                            <option>字段选择3</option>
+                                            <option>字段选择4</option>
+                                            <option>字段选择5</option>
+                                        </select>
+                                    </div>
+                                    <div class="form-group">
+                                        <input type="email" class="form-control inputVal" id="inputEmail5" placeholder="">
+                                    </div>
+                                    <button type="button" class="btn btn-default query">查询</button>
+                                </form>
+                            </div>
+                            <table id="table_scan"></table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<script>
+    $(function(){
+        /* 表格调用 */
+        const $tableConf = $('#table_conf');
+        const $tableConfPa=$('.cloud-content-table-conf');
+        var tableDataConf=[
+            {
+            id:0,
+            name: '1_OPC2334',
+            describe: '采集某某的设备现场',
+            type: 'boolean',
+            server: 'KepwareEx',
+            group:"Channel_1",
+            tag:"Ramp1",
+            handle:"已处理",
+            device:"A厂-B车间-C工段-D设备",
+            state:false
+        }, {
+            id:1,
+            name: '2_OPC2334',
+            describe: '采集某某的设备现场',
+            type: 'boolean',
+            server: 'KepwareEx',
+            group:"Channel_1",
+            tag:"Ramp1",
+            handle:"已处理",
+            device:"A厂-B车间-C工段-D设备",
+            state:false
+        },{
+            id:2,
+            name: '3_OPC2334',
+            describe: '采集某某的设备现场',
+            type: 'boolean',
+            server: 'KepwareEx',
+            group:"Channel_1",
+            tag:"Ramp1",
+            handle:"已处理",
+            device:"A厂-B车间-C工段-D设备",
+            state:false
+        }, {
+            id:3,
+            name: '4_OPC2334',
+            describe: '采集某某的设备现场',
+            type: 'boolean',
+            server: 'KepwareEx',
+            group:"Channel_1",
+            tag:"Ramp1",
+            handle:"已处理",
+            device:"A厂-B车间-C工段-D设备",
+            state:false
+        },{
+            id:4,
+            name: '5_OPC2334',
+            describe: '采集某某的设备现场',
+            type: 'boolean',
+            server: 'KepwareEx',
+            group:"Channel_1",
+            tag:"Ramp1",
+            handle:"已处理",
+            device:"A厂-B车间-C工段-D设备",
+            state:false
+        }, {
+            id:5,
+            name: '6_OPC2334',
+            describe: '采集某某的设备现场',
+            type: 'boolean',
+            server: 'KepwareEx',
+            group:"Channel_1",
+            tag:"Ramp1",
+            handle:"已处理",
+            device:"A厂-B车间-C工段-D设备",
+            state:false
+        },{
+            id:6,
+            name: '7_OPC2334',
+            describe: '采集某某的设备现场',
+            type: 'boolean',
+            server: 'KepwareEx',
+            group:"Channel_1",
+            tag:"Ramp1",
+            handle:"已处理",
+            device:"A厂-B车间-C工段-D设备",
+            state:false
+        }, {
+            id:7,
+            name: '8_OPC2334',
+            describe: '采集某某的设备现场',
+            type: 'boolean',
+            server: 'KepwareEx',
+            group:"Channel_1",
+            tag:"Ramp1",
+            handle:"已处理",
+            device:"A厂-B车间-C工段-D设备",
+            state:false
+        },{
+            id:8,
+            name: '9_OPC2334',
+            describe: '采集某某的设备现场',
+            type: 'boolean',
+            server: 'KepwareEx',
+            group:"Channel_1",
+            tag:"Ramp1",
+            handle:"已处理",
+            device:"A厂-B车间-C工段-D设备",
+            state:false
+        }]
+        
+        const $tableMonitor = $('#table_monitor');
+        const $tableMonitorPa=$('.cloud-content-table-monitor');
+        var tableDataMonitor=[
+        {
+            id:0,
+            name: '1_OPC2334',
+            describe: '采集某某的设备现场',
+            server: 'KepwareEx',
+            group:"Channel_1",
+            tag:"Ramp1",
+            current:"3.1415",
+            vary:"3.1415",
+            collect:"3.1415",
+            time:"2018-07-17 21:05:36",
+            device:"A厂-B车间-C工段-D设备",
+            state:false
+        }, {
+            id:1,
+            name: '2_OPC2334',
+            describe: '采集某某的设备现场',
+            server: 'KepwareEx',
+            group:"Channel_1",
+            tag:"Ramp1",
+            current:"3.1415",
+            vary:"3.1415",
+            collect:"3.1415",
+            time:"2018-07-17 21:05:36",
+            device:"A厂-B车间-C工段-D设备",
+            state:false
+        },{
+            id:2,
+            name: '3_OPC2334',
+            describe: '采集某某的设备现场',
+            server: 'KepwareEx',
+            group:"Channel_1",
+            tag:"Ramp1",
+            current:"3.1415",
+            vary:"3.1415",
+            collect:"3.1415",
+            time:"2018-07-17 21:05:36",
+            device:"A厂-B车间-C工段-D设备",
+            state:false
+        }, {
+            id:3,
+            name: '4_OPC2334',
+            describe: '采集某某的设备现场',
+            server: 'KepwareEx',
+            group:"Channel_1",
+            tag:"Ramp1",
+            current:"3.1415",
+            vary:"3.1415",
+            collect:"3.1415",
+            time:"2018-07-17 21:05:36",
+            device:"A厂-B车间-C工段-D设备",
+            state:false
+        },{
+            id:4,
+            name: '5_OPC2334',
+            describe: '采集某某的设备现场',
+            server: 'KepwareEx',
+            group:"Channel_1",
+            tag:"Ramp1",
+            current:"3.1415",
+            vary:"3.1415",
+            collect:"3.1415",
+            time:"2018-07-17 21:05:36",
+            device:"A厂-B车间-C工段-D设备",
+            state:false
+        }, {
+            id:5,
+            name: '6_OPC2334',
+            describe: '采集某某的设备现场',
+            server: 'KepwareEx',
+            group:"Channel_1",
+            tag:"Ramp1",
+            current:"3.1415",
+            vary:"3.1415",
+            collect:"3.1415",
+            time:"2018-07-17 21:05:36",
+            device:"A厂-B车间-C工段-D设备",
+            state:false
+        },{
+            id:6,
+            name: '7_OPC2334',
+            describe: '采集某某的设备现场',
+            server: 'KepwareEx',
+            group:"Channel_1",
+            tag:"Ramp1",
+            current:"3.1415",
+            vary:"3.1415",
+            collect:"3.1415",
+            time:"2018-07-17 21:05:36",
+            device:"A厂-B车间-C工段-D设备",
+            state:false
+        }, {
+            id:7,
+            name: '8_OPC2334',
+            describe: '采集某某的设备现场',
+            server: 'KepwareEx',
+            group:"Channel_1",
+            tag:"Ramp1",
+            current:"3.1415",
+            vary:"3.1415",
+            collect:"3.1415",
+            time:"2018-07-17 21:05:36",
+            device:"A厂-B车间-C工段-D设备",
+            state:false
+        },{
+            id:8,
+            name: '9_OPC2334',
+            describe: '采集某某的设备现场',
+            server: 'KepwareEx',
+            group:"Channel_1",
+            tag:"Ramp1",
+            current:"3.1415",
+            vary:"3.1415",
+            collect:"3.1415",
+            time:"2018-07-17 21:05:36",
+            device:"A厂-B车间-C工段-D设备",
+            state:false
+        }]
+        
+        const $tableScan = $('#table_scan');
+        const $tableScanPa=$('.cloud-content-table-scan');
+        var tableDataScan=[
+            {
+            id:0,
+            name: '1_OPC2334',
+            describe: '采集某某的设备现场',
+            type: 'boolean',
+            server: 'KepwareEx',
+            group:"Channel_1",
+            tag:"Ramp1",
+            handle:"已处理",
+            device:"A厂-B车间-C工段-D设备",
+            state:false
+        }, {
+            id:1,
+            name: '2_OPC2334',
+            describe: '采集某某的设备现场',
+            type: 'boolean',
+            server: 'KepwareEx',
+            group:"Channel_1",
+            tag:"Ramp1",
+            handle:"已处理",
+            device:"A厂-B车间-C工段-D设备",
+            state:false
+        },{
+            id:2,
+            name: '3_OPC2334',
+            describe: '采集某某的设备现场',
+            type: 'boolean',
+            server: 'KepwareEx',
+            group:"Channel_1",
+            tag:"Ramp1",
+            handle:"已处理",
+            device:"A厂-B车间-C工段-D设备",
+            state:false
+        }, {
+            id:3,
+            name: '4_OPC2334',
+            describe: '采集某某的设备现场',
+            type: 'boolean',
+            server: 'KepwareEx',
+            group:"Channel_1",
+            tag:"Ramp1",
+            handle:"已处理",
+            device:"A厂-B车间-C工段-D设备",
+            state:false
+        },{
+            id:4,
+            name: '5_OPC2334',
+            describe: '采集某某的设备现场',
+            type: 'boolean',
+            server: 'KepwareEx',
+            group:"Channel_1",
+            tag:"Ramp1",
+            handle:"已处理",
+            device:"A厂-B车间-C工段-D设备",
+            state:false
+        }, {
+            id:5,
+            name: '6_OPC2334',
+            describe: '采集某某的设备现场',
+            type: 'boolean',
+            server: 'KepwareEx',
+            group:"Channel_1",
+            tag:"Ramp1",
+            handle:"已处理",
+            device:"A厂-B车间-C工段-D设备",
+            state:false
+        },{
+            id:6,
+            name: '7_OPC2334',
+            describe: '采集某某的设备现场',
+            type: 'boolean',
+            server: 'KepwareEx',
+            group:"Channel_1",
+            tag:"Ramp1",
+            handle:"已处理",
+            device:"A厂-B车间-C工段-D设备",
+            state:false
+        }, {
+            id:7,
+            name: '8_OPC2334',
+            describe: '采集某某的设备现场',
+            type: 'boolean',
+            server: 'KepwareEx',
+            group:"Channel_1",
+            tag:"Ramp1",
+            handle:"已处理",
+            device:"A厂-B车间-C工段-D设备",
+            state:false
+        },{
+            id:8,
+            name: '9_OPC2334',
+            describe: '采集某某的设备现场',
+            type: 'boolean',
+            server: 'KepwareEx',
+            group:"Channel_1",
+            tag:"Ramp1",
+            handle:"已处理",
+            device:"A厂-B车间-C工段-D设备",
+            state:false
+        }]
+
+        /* 数据点配置 */
+        function operateFormatterConf(value, row, index) {
+            return [
+                '<div class="btn-group dropright">'+
+                    '<i class="fa fa-ellipsis-h dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"></i>'+
+                    '<ul class="dropdown-menu">'+
+                        '<li><a class="edit" href="javascript:void(0)"><i class="fa fa-pencil"></i>编辑</a></li>'+
+                        '<li><a class="look" href="javascript:void(0)"><i class="fa fa-search"></i>查看</a></li>'+
+                        '<li><a class="remove" href="javascript:void(0)"><i class="fa fa-trash-o"></i>删除</a></li>'+
+                    '</ul>'+
+                '</div>'
+            ].join('');
+        }
+        var operateEventsConf = {
+            'click .edit': function (e, value, row, index) {//点击编辑
+                alert(`You click edit action, row: ${JSON.stringify(row)}`);
+            },
+            'click .look': function (e, value, row, index) {//点击查看
+                alert(`You click look action, row: ${JSON.stringify(row)}`);
+            },
+            'click .remove': function(e, value, {id}, index) {//点击删除
+                console.log("remove");
+                console.log(id);
+                $tableConf.bootstrapTable('remove', {
+                    field: 'id',
+                    values: [id]
+                });
+            }
+        };
+        $tableConfPa.find(".query").click(function(){//点击查询
+            var field=$(this).closest(".condition").find(".field option:selected").text();   
+            var text=$(this).closest(".condition").find(".inputVal").val();
+            alert(field+"     "+text);
+            $tableConf.bootstrapTable('refresh', {
+                    silent: true,
+                    url: newUrl,
+                    query: {field: "field",text:"text"}
+            });
+        });
+
+        $tableConf.on('check.bs.table uncheck.bs.table ' +
+                'check-all.bs.table uncheck-all.bs.table', () => {
+                    $tableConfPa.find(".remove").css('pointer-events', $tableConf.bootstrapTable('getSelections').length?'auto':'none');
+        }); 
+        function getIdSelectionsConf() {
+            return $.map($tableConf.bootstrapTable('getSelections'), ({id}) => id);
+        }
+        $tableConfPa.find(".remove").click(() => {//批量删除数据
+            const ids = getIdSelectionsConf();
+            $tableConf.bootstrapTable('remove', {
+                field: 'id',
+                values: ids
+            });
+            $(this).find(".remove").css('pointer-events', 'none');
+        });
+        $('#myModalAdd').find(".append").click(() => {//添加数据
+            $tableConf.bootstrapTable('prepend', {
+                id:100,
+                name: '新添加的数据',
+                describe: '采集某某的设备现场',
+                type: 'boolean',
+                server: 'KepwareEx',
+                group:"Channel_1",
+                tag:"Ramp1",
+                handle:"已处理",
+                device:"A厂-B车间-C工段-D设备",
+                state:false
+            });
+        });
+        /* 数据点监控 */
+        function operateFormatterMonitor(value, row, index) {
+            return [
+                '<div class="btn-group dropright">'+
+                    '<i class="fa fa-ellipsis-h dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"></i>'+
+                    '<ul class="dropdown-menu">'+
+                        '<li><a class="look" href="javascript:void(0)" data-toggle="modal" data-target="#myModalView" data-backdrop="static" data-keyboard="false"><i class="fa fa-search"></i>查看</a></li>'+
+                    '</ul>'+
+                '</div>'
+            ].join('');
+        }
+        var operateEventsMonitor = {
+            'click .look': function (e, value, row, index) {//点击查看
+                //alert(`You click look action, row: ${JSON.stringify(row)}`);
+            }
+        };
+        $tableMonitorPa.find(".query").click(function(){//点击查询
+            var field=$(this).closest(".condition").find(".field option:selected").text();
+            var text=$(this).closest(".condition").find(".inputVal").val();
+            $tableMonitor.bootstrapTable('refresh', {
+                    silent: true,
+                    url: newUrl,
+                    query: {field: "field",text:"text"}
+            });
+        });
+        /* 数据点配置-扫描 */
+        function operateFormatterScan(value, row, index) {
+            return [
+                '<div class="btn-group dropright">'+
+                    '<i class="fa fa-ellipsis-h dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"></i>'+
+                    '<ul class="dropdown-menu">'+
+                        '<li><a class="remove" href="javascript:void(0)"><i class="fa fa-trash-o"></i>删除</a></li>'+
+                    '</ul>'+
+                '</div>'
+            ].join('');
+        }
+        var operateEventsScan = {
+            'click .remove': function(e, value, {id}, index) {//点击删除
+                $tableScan.bootstrapTable('remove', {
+                    field: 'id',
+                    values: [id]
+                });
+            }
+        };
+        $tableScanPa.find(".query").click(function(){//点击查询
+            var field=$(this).closest(".condition").find(".field option:selected").text();   
+            var text=$(this).closest(".condition").find(".inputVal").val();
+            alert(field+"     "+text);
+            $tableConf.bootstrapTable('refresh', {
+                    silent: true,
+                    url: newUrl,
+                    query: {field: "field",text:"text"}
+            });
+        });
+        $tableScan.on('check.bs.table uncheck.bs.table ' +
+                'check-all.bs.table uncheck-all.bs.table', () => {
+                    $tableScanPa.find(".remove").css('pointer-events', $tableScan.bootstrapTable('getSelections').length?'auto':'none');
+        }); 
+        function getIdSelectionsScan() {
+            return $.map($tableScan.bootstrapTable('getSelections'), ({id}) => id);
+        }
+        $tableScanPa.find(".remove").click(() => {//批量删除数据
+            const ids = getIdSelectionsScan();
+            $tableScan.bootstrapTable('remove', {
+                field: 'id',
+                values: ids
+            });
+            $(this).find(".remove").css('pointer-events', 'none');
+        });
+
+        $tableConf.bootstrapTable({
+            pagination: true,                   //是否显示分页（*）
+            pageList: [5, 15, 25, 100],        //可供选择的每页的行数（*）
+            striped:true,
+            pageSize:5,
+            classes:'table table-point-i',
+            idField:"id",
+            columns: [{
+                field: 'state',
+                checkbox: true,
+                align:'center'
+            },{
+                field: 'name',
+                title: '名称',
+                align:'center',
+                sortable: true
+            }, {
+                field: 'describe',
+                title: '描述',
+                align:'center'
+            }, {
+                field: 'type',
+                title: '数据类型',
+                align:'center'
+            },{
+                field: 'server',
+                title: 'Server',
+                align:'center',
+                sortable: true
+            }, {
+                field: 'group',
+                title: 'Group',
+                align:'center'
+            }, {
+                field: 'tag',
+                title: 'Tag',
+                align:'center'
+            },{
+                field: 'handle',
+                title: '预处理',
+                align:'center'
+            }, {
+                field: 'device',
+                title: '设备树',
+                align:'center',
+                sortable: true
+            }, {
+                field: 'operation',
+                title: '操作',
+                align:'center',
+                events: operateEventsConf,
+                formatter: operateFormatterConf
+            }],
+            data: tableDataConf
+        });
+        $tableMonitor.bootstrapTable({
+            pagination: true,                   //是否显示分页（*）
+            pageList: [5, 15, 25, 100],        //可供选择的每页的行数（*）
+            striped:true,
+            pageSize:5,
+            classes:'table table-point-i',
+            columns: [{
+                field: 'state',
+                checkbox: true,
+                align:'center'
+            },{
+                field: 'name',
+                title: '名称',
+                align:'center',
+                sortable: true
+            }, {
+                field: 'describe',
+                title: '描述',
+                align:'center'
+            }, {
+                field: 'server',
+                title: 'Server',
+                align:'center',
+                sortable: true
+            },{
+                field: 'group',
+                title: 'Group',
+                align:'center'
+            }, {
+                field: 'tag',
+                title: 'Tag',
+                align:'center'
+            }, {
+                field: 'current',
+                title: '当前值',
+                align:'center'
+            },{
+                field: 'vary',
+                title: '变换值',
+                align:'center'
+            }, {
+                field: 'collect',
+                title: '采集值',
+                align:'center'
+            }, {
+                field: 'time',
+                title: '最后更新时间',
+                align:'center'
+            }, {
+                field: 'device',
+                title: '设备树',
+                align:'center',
+                sortable: true
+            }, {
+                field: 'operation',
+                title: '操作',
+                align:'center',
+                events: operateEventsMonitor,
+                formatter: operateFormatterMonitor
+            }],
+            data: tableDataMonitor
+        });
+        $tableScan.bootstrapTable({
+            pagination: true,                   //是否显示分页（*）
+            pageList: [5, 15, 25, 100],        //可供选择的每页的行数（*）
+            striped:true,
+            pageSize:5,
+            classes:'table table-point-i',
+            idField:"id",
+            columns: [{
+                field: 'state',
+                checkbox: true,
+                align:'center'
+            },{
+                field: 'name',
+                title: '名称',
+                align:'center',
+                sortable: true
+            }, {
+                field: 'describe',
+                title: '描述',
+                align:'center'
+            }, {
+                field: 'type',
+                title: '数据类型',
+                align:'center'
+            },{
+                field: 'server',
+                title: 'Server',
+                align:'center',
+                sortable: true
+            }, {
+                field: 'group',
+                title: 'Group',
+                align:'center'
+            }, {
+                field: 'tag',
+                title: 'Tag',
+                align:'center'
+            },{
+                field: 'handle',
+                title: '预处理',
+                align:'center'
+            }, {
+                field: 'device',
+                title: '设备树',
+                align:'center',
+                sortable: true
+            }, {
+                field: 'operation',
+                title: '操作',
+                align:'center',
+                events: operateEventsScan,
+                formatter: operateFormatterScan
+            }],
+            data: tableDataScan
+        });
+        /* 模态框面积图 */
+        $('#myModalView').on('shown.bs.modal', function (e) {
+            var data=[
+                ["1536029467","500"],
+                ["1536029468.5","900"],
+                ["1536029470","700"],
+                ["1536029471.5","1000"],
+                ["1536029473","500"],
+                ["1536029474.5","1400"],
+                ["1536029476","1700"],
+                ["1536029477.5","2700"],
+                ["1536029479","700"],
+                ["1536029480.5","700"],
+                ["1536029482","700"],
+                ["1536029483.5","700"],
+                ["1536029485","700"],
+                ["1536029486.5","700"],
+                ["1536029488","700"],
+                ["1536029489.5","700"],
+                ["1536029491","700"],
+                ["1536029492.5","700"],
+                ["1536029494","700"],
+                ["1536029495.5","700"],
+                ["1536029497","700"],
+                ["1536029498.5","700"],
+                ["1536029500","400"],
+                ["1536029501.5","18000"],
+                ["1536029503","18000"],
+                ["1536029504.5","15000"],
+                ["1536029506","10000"],
+                ["1536029507.5","1000"],
+                ["1536029509","1000"],
+                ["1536029510.5","1000"],
+                ["1536029512","1000"],
+                ["1536029513.5","1000"],
+                ["1536029515","1000"],
+                ["1536029516.5","1000"],
+                ["1536029518","1000"],
+                ["1536029519.5","5000"],
+                ["1536029521","5000"],
+                ["1536029522.5","12000"]
+            ];
+            var data1=[
+                ["1536029467","500"],
+                ["1536029513.5","1000"],
+                ["1536029515","1000"],
+                ["1536029516.5","1000"],
+                ["1536029518","1000"],
+                ["1536029519.5","5000"],
+                ["1536029521","5000"],
+                ["1536029522.5","12000"]
+            ];
+            $("#areaChart").areaChart(data);
+            setTimeout(function(){ $("#areaChart").areaChart(data1); }, 3000);
+        })
+    })
+    /* 调用模态框时间插件 */
+    layui.use('laydate', function(){
+        var laydate = layui.laydate;
+        laydate.render({
+            elem: '#datetime',
+            type: 'datetime',
+            range: '-',
+            format: 'yyyy-MM-dd HH:mm:ss'
+        });
+    })
+</script>
+</body>
+</html>

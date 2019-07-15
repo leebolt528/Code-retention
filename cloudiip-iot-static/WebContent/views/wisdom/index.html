@@ -1,0 +1,1022 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <!-- <link rel="stylesheet" href="../../css/wisdom/bootstrap.css"> -->
+    <link rel="stylesheet" href="../../css/plugins/bootstrap/bootstrap.css">
+    <link rel="stylesheet" href="../../css/plugins/awesome/font-awesome.min.css">
+    <link rel="stylesheet" href="../../css/plugins/wisdom/zTreeStyle.css">
+    <link rel="stylesheet" href="../../css/common/commonWis.css">
+    <link rel="stylesheet" href="../../css/wisdom/bootstrap-table.css">
+    <link rel="stylesheet" href="../../css/wisdom/zone-tables.css">
+    <link rel="stylesheet" href="../../css/wisdom/bootstrap-table-pagejump.css">
+
+    <script type="text/javascript" src='../../js/plugins/jquery/jquery.min.js'></script>
+    <script type="text/javascript" src='../../js/plugins/bootstrap/bootstrap.js'></script>
+    <script type='text/javascript' src='../../js/plugins/ztree/jquery.ztree.core.js'></script>
+    <script type='text/javascript' src='../../js/plugins/ztree/jquery.ztree.exhide.js'></script>
+    <script type='text/javascript' src='../../js/plugins/ztree/fuzzysearch.js'></script>
+    <script type='text/javascript' src='../../js/plugins/ztree/jquery.ztree.excheck.js'></script>
+    <script type='text/javascript' src='../../js/plugins/ztree/jquery.ztree.exedit.js'></script>
+    <script type='text/javascript' src='../../js/plugins/uploadImg.js'></script>
+    <script type='text/javascript' src='../../js/plugins/bootstrap/bootstrap-table.js'></script>
+    <script type='text/javascript' src='../../js/wisdom/bootstrap-table-pagejump.js'></script>
+    <script type='text/javascript' src='../../js/plugins/bootstrap/bootstrap-table-zh-CN.js'></script>
+    <script>
+        var setting = {
+            view: {
+                showLine: true,
+                showIcon:false,
+                selectedMulti: false,
+                addHoverDom: addHoverDom,
+				removeHoverDom: removeHoverDom,
+            },
+            edit:{
+                enable: true,
+                showRemoveBtn: showRemoveBtn,
+				showRenameBtn: showRenameBtn,
+                removeTitle:"remove",
+                renameTitle:"rename"
+            },
+            callback: {
+                onClick: zTreeOnClick,
+                beforeEditName: beforeEditName,
+                beforeRemove: beforeRemove,
+            },
+            data: {
+                simpleData: {
+                    enable: true
+                }
+            }
+        };
+        var zNodes =[
+            { id:1,
+                pId:0,
+                name:"住宿大楼",
+                info:{
+                    name:"住宿大楼",
+                    region:"北京市",
+                    address:"北京市朝阳区十八里店868号",
+                    person:"张三",
+                    phone:"15263417632",
+                    imgUrl:"../../img/common/Desert.png"
+                },
+                open:true
+            },
+            { id:11, pId:1, name:"B1"},
+            { id:111, pId:11, name:"防火区1"},
+            { id:112, pId:11, name:"防火区2"},
+            { id:113, pId:11, name:"防火区3"},
+			{ id:12, pId:1, name:"F1"},
+            { id:13, pId:1, name:"F2"},
+            { id:131, pId:13, name:"防火区1"},
+            { id:132, pId:13, name:"防火区2"},
+            { id:1311, pId:131, name:"15658 库房东北角"},
+            { id:1312, pId:131, name:"15565 传达室内1"},
+            { id:1313, pId:131, name:"41514 楼梯拐角"},
+			{ id:14, pId:1, name:"F3"},
+            { id:2,
+                pId:0,
+                name:"餐饮大楼",
+                info:{
+                    //name:"餐饮大楼",
+                    region:"上海市",
+                    address:"上海市浦东",
+                    person:"小李",
+                    phone:"18763412222",
+                    imgUrl:""
+                },
+                open:true
+            }
+        ];
+        /* 鼠标悬入节点事件 */
+		function addHoverDom(treeId, treeNode) {
+            if(treeNode.level==0||treeNode.level==1){//是否显示节点后添加图标
+                var sObj = $("#" + treeNode.tId + "_span");
+                if (treeNode.editNameFlag || $("#addBtn_"+treeNode.tId).length>0) return;
+                var addStr = "<span class='button add' id='addBtn_" + treeNode.tId
+                    + "' title='add node' onfocus='this.blur();'></span>";
+                sObj.after(addStr);
+                var btn = $("#addBtn_"+treeNode.tId);
+            }
+			if (btn) btn.bind("click", function(){
+                zTree.selectNode(treeNode);//选择点
+                if(treeNode.level==0){//添加楼层点击事件
+                    $('#floorAdd').modal('show').find("input").val("").end().find("select option:first-child").attr("selected","").siblings().removeAttr("selected");
+                    $('#floorAdd').find(".btn-cloud").addClass("new").removeClass("edit");
+                }else if(treeNode.level==1){//添加分区点击事件
+                    $('#zoneAdd').modal('show').find("input").val('');
+                    $('#zoneAdd').find(".btn-cloud").addClass("new").removeClass("edit");
+                }
+                return false;
+			});
+        };
+        /* 鼠标浮出节点事件 */
+		function removeHoverDom(treeId, treeNode) {
+			$("#addBtn_"+treeNode.tId).unbind().remove();
+        };
+        /* 是否显示节点后删除图标 */
+        function showRemoveBtn(treeId, treeNode) {
+			return true;
+        }
+         /* 是否显示节点后编辑图标 */
+		function showRenameBtn(treeId, treeNode) {
+            if(treeNode.level<=2){
+                return true;
+            }
+        }
+         /* 节点点击事件 */
+         function zTreeOnClick(event, treeId, treeNode) {
+            if(treeNode.level==0){/* 大楼节点点击事件 */
+                $(".project-content-details>.zone-view").hide();
+                $(".project-content-details>.detector-view").hide();
+                $(".project-content-details>.addBuild").addClass("vanish").show();
+               /*  $(".build-info input").each(function(){
+                    $(this).val(treeNode.info[$(this).attr("name")]);
+                }); */
+                if(!$("#"+treeNode["tId"]+"_span").data("cache")){
+                    $(".build-info input[name='name']").val($("#"+treeNode["tId"]+"_span").text());
+                    $(".build-info input[name='region']").val(treeNode.info["region"]);
+                    $(".build-info input[name='address']").val(treeNode.info["address"]);
+                    $(".build-info input[name='person']").val(treeNode.info["person"]);
+                    $(".build-info input[name='phone']").val(treeNode.info["phone"]);
+                    $(".build-img img").attr("src",treeNode.info["imgUrl"]?treeNode.info["imgUrl"]:imgUrlNone)
+                }else{
+                    $(".build-info input[name='name']").val($("#"+treeNode["tId"]+"_span").text());
+                    $(".build-info input[name='region']").val($("#"+treeNode["tId"]+"_span").data("cache").region);
+                    $(".build-info input[name='address']").val($("#"+treeNode["tId"]+"_span").data("cache").address);
+                    $(".build-info input[name='person']").val($("#"+treeNode["tId"]+"_span").data("cache").person);
+                    $(".build-info input[name='phone']").val($("#"+treeNode["tId"]+"_span").data("cache").phone);
+                    $(".build-img img").attr("src",$("#"+treeNode["tId"]+"_span").data("cache").imgUrl?$("#"+treeNode["tId"]+"_span").data("cache").imgUrl:imgUrlNone)
+                }
+                $(".deleteImg").hide();
+                $(".addBuild .save").hide();
+                $(".build-img>.upload").hide();
+                imgInfoCurr="";
+            }else if(treeNode.level==2){/* 分区节点点击事件 */
+                $(".project-content-details>.addBuild").hide();
+                $(".project-content-details>.detector-view").hide();
+                $(".project-content-details>.zone-view").removeClass("zone-edit zone-add").show();
+                console.log("id="+treeNode.id);
+            }else if(treeNode.level==3){/* 探测器节点点击事件 */
+                $(".project-content-details>.addBuild").hide();
+                $(".project-content-details>.zone-view").hide();
+                $(".project-content-details>.detector-view").removeClass("detector-edit").show();
+            }
+        }
+        /* 节点按钮编辑事件 */
+        function beforeEditName(treeId, treeNode) {
+            zTree.selectNode(treeNode);//选择点
+            if(treeNode.level==0){//编辑事件-大楼
+                zTree.setting.callback.onClick(null, treeId, treeNode);//调用事件
+                $(".project-content-details>.addBuild").removeClass("vanish").children(".save").addClass("edit").removeClass("new");
+                var nodes = zTree.getSelectedNodes();
+                if(treeNode.info.imgUrl&&(!$("#"+nodes[0]["tId"]+"_span").data("cache")||$("#"+nodes[0]["tId"]+"_span").data("cache").imgUrl)||!treeNode.info.imgUrl&&$("#"+nodes[0]["tId"]+"_span").data("cache")&&!$("#"+nodes[0]["tId"]+"_span").data("cache").imgUrl){
+                    $(".deleteImg").show();
+                    $(".build-img>.upload").hide();
+                }else{
+                    $(".deleteImg").hide();
+                    $(".build-img>.upload").show();
+                }
+                $(".addBuild .save").show();
+                imgInfoCurr=$("#"+nodes[0]["tId"]+"_span").data("cache")?$("#"+nodes[0]["tId"]+"_span").data("cache").imgUrl:treeNode.info.imgUrl;
+            }else if(treeNode.level==1){//编辑事件-楼层
+                var name=$("#"+treeNode["tId"]+"_span").text();
+                $('#floorAdd').modal('show').find(".btn-cloud").addClass("edit").removeClass("new");
+                name.substring(0,1)=="B"?$("#floorAdd select>option:first-child").attr("selected","").siblings().removeAttr("selected"):$("#floorAdd select>option:last-child").attr("selected","").siblings().removeAttr("selected");
+                $("#floorAdd input").val(name.substring(1));
+            }else if(treeNode.level==2){//编辑事件-分区
+                var name=$("#"+treeNode["tId"]+"_span").text();
+                $('#zoneAdd').modal('show').find(".btn-cloud").addClass("edit").removeClass("new").end().find("input").val(treeNode.name);
+                $("#zoneAdd input").val(name);
+            }
+			return false;
+        }
+        /* 节点按钮删除事件 */
+        function beforeRemove(treeId, treeNode){
+            zTree.selectNode(treeNode);//选择点
+            if(treeNode.level==0){//删除事件-大楼
+                $('#buildRemove').modal('show');
+            }else if(treeNode.level==1){//删除事件-楼层
+                $("#floorRemove").modal('show');
+            }else if(treeNode.level==2){//删除事件-分区
+                $("#zoneRemove").modal('show');
+            }else if(treeNode.level==3){//删除事件-探测器
+                $("#detectorRemove").modal('show');
+            }
+            return false;
+        }
+        /* 添加大楼按钮点击事件 */
+        $(document).on("click",".project-content-ztree>.addBuildB",function(){
+            $(".project-content-details>.addBuild").removeClass("vanish").show().children(".save").addClass("new").removeClass("edit");
+            $(".build-info input").each(function(){
+                $(this).val("");
+            });
+            $(".deleteImg").hide();
+            $(".addBuild .save").show();
+            $(".build-img>.upload").show();
+            $(".build-img .img-responsive").attr("src",imgUrlUpload);
+            imgInfoCurr="";
+        });
+        /* 添加大楼点击保存事件 */
+        $(document).on("click",".addBuild>.save.new",function(){
+            var addBuildCheck=false;
+            $(".build-info input").each(function(){
+                if($(this).val().length==0){
+                    addBuildCheck=true;
+                }
+            });
+            if(addBuildCheck){
+                $("#addBuildCheck").modal('show');
+                return;
+            }
+            $(".project-content-details>.addBuild").hide();
+            var newCache = { 
+                name:$(".addBuild form input[name='name']").val(),
+                info:{
+                    name:$(".addBuild form input[name='name']").val(),
+                    region:$(".addBuild form input[name='region']").val(),
+                    address:$(".addBuild form input[name='address']").val(),
+                    person:$(".addBuild form input[name='person']").val(),
+                    phone:$(".addBuild form input[name='phone']").val(),
+                    imgUrl:$(".build-img img").attr("src")==imgUrlUpload?"":$(".build-img img").attr("src")
+                }
+            };
+            var newNode=zTree.addNodes(null, newCache);
+            zTree.selectNode(newNode[0]);//选择点
+
+            //获得图片的Base64
+            var file=imgInfoCurr;
+            var reader = new FileReader();
+            //var AllowImgFileSize = 2100000; //上传图片最大值(单位字节)（ 2 M = 2097152 B ）超过2M上传失败
+            //var file = $("#image")[0].files[0];
+            var imgUrlBase64;
+            if (file) {
+                //将文件以Data URL形式读入页面  
+                imgUrlBase64 = reader.readAsDataURL(file);
+                reader.onload = function (e) {
+                //var ImgFileSize = reader.result.substring(reader.result.indexOf(",") + 1).length;//截取base64码部分（可选可不选，需要与后台沟通）
+               /*  if (AllowImgFileSize != 0 && AllowImgFileSize < reader.result.length) {
+                        alert( '上传失败，请上传不大于2M的图片！');
+                        return;
+                    }else{ */
+                        //执行上传操作
+                        alert(reader.result);//var data=newCache.info;   data.imgUrl=reader.result; rerutn data;
+                   /*  } */
+                }
+            }else{
+                //无图片时或未修改图片
+                alert("添加大楼-无图片时");//var data=newCache.info;   data.imgUrl=""; rerutn data;
+            }
+
+            var nodes = zTree.getSelectedNodes();
+            $("#"+nodes[0]["tId"]+"_span").data("cache",newCache.info);
+            $("#"+nodes[0]["tId"]+"_span").text($(".addBuild form input[name='name']").val());
+            zTree.setting.callback.onClick(null, zTree.setting.treeId, newNode[0]);//调用事件
+        });
+        /* 编辑大楼信息点击保存事件 */
+        $(document).on("click",".addBuild>.save.edit",function(){
+            var addBuildCheck=false;
+            $(".build-info input").each(function(){
+                if($(this).val().length==0){
+                    addBuildCheck=true;
+                }
+            });
+            if(addBuildCheck){
+                $("#addBuildCheck").modal('show');
+                return;
+            }
+            $(".project-content-details>.addBuild").hide();
+            var cache = { 
+                name:$(".addBuild form input[name='name']").val(),
+                region:$(".addBuild form input[name='region']").val(),
+                address:$(".addBuild form input[name='address']").val(),
+                person:$(".addBuild form input[name='person']").val(),
+                phone:$(".addBuild form input[name='phone']").val(),
+                imgUrl:$(".build-img img").attr("src")==imgUrlUpload?"":$(".build-img img").attr("src")
+            };
+
+            //获得图片的Base64
+            var file=imgInfoCurr;
+            var reader = new FileReader();
+            //var AllowImgFileSize = 2100000; //上传图片最大值(单位字节)（ 2 M = 2097152 B ）超过2M上传失败
+            //var file = $("#image")[0].files[0];
+            var imgUrlBase64;
+            if (file==$(".build-img img").attr("src")){
+                alert("编辑大楼-未修改图片");//var data=newCache.info;   data.imgUrl="未修改"; rerutn data;
+            } else if(file){
+                //将文件以Data URL形式读入页面  
+                imgUrlBase64 = reader.readAsDataURL(file);
+                reader.onload = function (e) {
+                //var ImgFileSize = reader.result.substring(reader.result.indexOf(",") + 1).length;//截取base64码部分（可选可不选，需要与后台沟通）
+               /*  if (AllowImgFileSize != 0 && AllowImgFileSize < reader.result.length) {
+                        alert( '上传失败，请上传不大于2M的图片！');
+                        return;
+                    }else{ */
+                        //执行上传操作
+                        alert(reader.result);//var data=newCache.info;   data.imgUrl=reader.result; rerutn data;
+                   /*  } */
+                }
+            }else{
+                //无图片时或未修改图片
+                alert("编辑大楼-无图片时");//var data=newCache.info;   data.imgUrl=""; rerutn data;
+            }
+
+            var nodes = zTree.getSelectedNodes();
+            $("#"+nodes[0]["tId"]+"_span").data("cache",cache);
+            $("#"+nodes[0]["tId"]+"_span").text($(".addBuild form input[name='name']").val());
+            zTree.setting.callback.onClick(null, zTree.setting.treeId, nodes[0]);//调用事件
+        });
+
+
+        /* 添加楼层模态框确定事件 */
+        $(document).on("click",".floorAdd .btn-cloud.new",function(){
+            var newName=($(".floorAdd select").val()=="地上"?"B":"F")+$(".floorAdd input").val();
+            var newNode = { name:newName };
+            zTree.addNodes(zTree.getSelectedNodes()[0], newNode);
+            $(this).closest(".modal").modal('hide');
+        }) 
+        /* 编辑楼层模态框确定事件 */
+        $(document).on("click",".floorAdd .btn-cloud.edit",function(){
+            var newName=($(".floorAdd select").val()=="地上"?"B":"F")+$(".floorAdd input").val();
+            var nodes = zTree.getSelectedNodes();
+            $("#"+nodes[0]["tId"]+"_span").text(newName);
+            $(this).closest(".modal").modal('hide');
+        }) 
+       /*  添加分区模态框确定事件 */
+        $(document).on("click",".zoneAdd .btn-cloud.new",function(){
+            var newNode = { name:$(".zoneAdd input").val() };
+            zTree.addNodes(zTree.getSelectedNodes()[0], newNode);
+            $(this).closest(".modal").modal('hide');
+        })
+        /* 编辑分区模态框确定事件 */
+        $(document).on("click",".zoneAdd .btn-cloud.edit",function(){
+            var newName = $(".zoneAdd input").val();
+            var nodes = zTree.getSelectedNodes();
+           $("#"+nodes[0]["tId"]+"_span").text(newName);
+            $(this).closest(".modal").modal('hide');
+        })
+        /* 删除头像点击事件 */
+        $(document).on("click",".deleteImg",function(){
+            $(".build-img .img-responsive").attr("src",imgUrlUpload);
+            $(".deleteImg").hide();
+            $(".build-img>.upload").show();
+            imgInfoCurr="";
+        })
+        /* 上传头像后的回调函数 */
+        function onUpload(file,imgUrl){
+            if(['png',"jpg","jpeg"].indexOf(file.name.split(".")[1])!=-1){
+                $(".deleteImg").show();
+                $(".build-img>.upload").hide();
+                imgInfoCurr=file;
+            }else{
+                $(".build-img .img-responsive").attr("src",imgUrlUpload);
+            }
+        }
+        /* 删除大楼模态框确定事件 */
+        $(document).on("click",".buildRemove .btn-cloud",function(){
+            var nodes = zTree.getSelectedNodes();
+            zTree.removeNode(nodes[0]);
+            $(this).closest(".modal").modal('hide');
+        })
+        /* 删除楼层模态框确定事件 */
+        $(document).on("click",".floorRemove .btn-cloud",function(){
+            var nodes = zTree.getSelectedNodes();
+            zTree.removeNode(nodes[0]);
+            $(this).closest(".modal").modal('hide');
+        })
+        /* 删除分区模态框确定事件 */
+        $(document).on("click",".zoneRemove .btn-cloud",function(){
+            var nodes = zTree.getSelectedNodes();
+            console.log(nodes);
+            zTree.removeNode(nodes[0]);
+            $(this).closest(".modal").modal('hide');
+        })
+        /* 删除探测器模态框确定事件 */
+        $(document).on("click",".detectorRemove .btn-cloud",function(){
+            var nodes = zTree.getSelectedNodes();
+            zTree.removeNode(nodes[0]);
+            $(this).closest(".modal").modal('hide');
+        })
+        /* ---------------------------------------点击分区下的操作事件------------------------------------------------------------------------------*/
+        /* 编辑按钮点击事件 */
+        $(document).on("click",".zone-view .edit-detector",function(){
+            $(".zone-view").addClass("zone-edit");
+        })
+        /* 返回按钮点击事件 */
+        $(document).on("click",".zone-view .return-detector",function(){
+            $(".zone-view").removeClass("zone-edit");
+        })
+        /* 添加探测器按钮点击事件 */
+        $(document).on("click",".zone-view .add-detector",function(){
+            $(".zone-view").removeClass("zone-edit").addClass("zone-add");
+            $("#detector-newAdd-table").bootstrapTable('removeAll');
+            $(".detector-whole .condition>input").val("");
+            $(".zone-view .detector-whole .btn.detector-all").addClass("active").siblings().removeClass("active");
+        })
+        /* 展示当前分区下绑定的探测器表格-解绑点击事件 */
+        $(document).on("click",".zone-view .detector-current-table .tr-untying",function(){
+            var id=$(this).closest("tr").data("id");
+            var nodes = zTree.getNodesByParam("id", id, null);
+            zTree.removeNode(nodes[0]);
+            const ids = [];
+            ids.push($(this).closest("tr").children("td:first-child").text());
+            $("#detector-current-table").bootstrapTable('remove', {field: 'id', values:ids})
+        })
+        /* 展示当前分区下绑定的探测器表格-保存点击事件 */
+        $(document).on("click",".zone-view .detector-current-table .tr-save",function(){
+            var id=$(this).closest("tr").data("id");
+            var nodes = zTree.getNodesByParam("id", id, null);
+           /*  保存后台需要的参数 */
+            var detector=$(this).closest("tr").children("td:nth-child(1)").text();
+            var template=$(this).closest("tr").children("td:nth-child(2)").text();
+            var ct1=$(this).closest("tr").children("td:nth-child(3)").find("input").val();
+            var ct2=$(this).closest("tr").children("td:nth-child(4)").find("input").val();
+            var cycle=$(this).closest("tr").children("td:nth-child(5)").find("input").val();
+            var name=$(this).closest("tr").children("td:nth-child(6)").find("input").val();
+
+            nodes[0].name = name;
+	        zTree.updateNode(nodes[0]);
+        })
+        /* 展示当前分区新添加的探测器表格-解绑点击事件 */
+        $(document).on("click",".zone-view .detector-newAdd-table .tr-untying",function(){
+            const ids = [];
+            ids.push($(this).closest("tr").children("td:first-child").text());
+            $("#detector-newAdd-table").bootstrapTable('remove', {
+                field: 'id',
+                values: ids
+            });
+        })
+        /* 展示所有的探测器表格-搜索回车事件 */
+        $(document).on("keypress",".detector-whole .condition>input",function(e){
+            if (e.which == 13) {
+                alert($(this).val());
+            }
+        })
+        /* 展示所有的探测器表格-左侧按钮过滤事件 */
+        $(document).on("click",".zone-view .detector-whole .btn",function(){
+            $(this).addClass("active").siblings().removeClass("active");
+        })
+        /* 展示所有的探测器表格-复选框点击事件 */
+        $(document).on('check.bs.table uncheck.bs.table ',"#detector-whole-table", (row) => {
+            var nodes=$("#detector-whole-table").bootstrapTable('getSelections');
+            $("#detector-newAdd-table").bootstrapTable('prepend', {
+                id:nodes[0].id,
+                detector: nodes[0].detector,
+                template: nodes[0].template,
+                ct1: nodes[0].ct1,
+                ct2:nodes[0].ct2,
+                cycle:nodes[0].cycle,
+                name:nodes[0].name,
+                operation:'<a href="#" class="tr-untying">[解绑]</a>'
+
+            });
+        });
+        /* 添加探测器-取消按钮点击事件 */
+        $(document).on("click",".zone-view .detector-newAdd .btn.cancel-detector",function(){
+            $(".zone-view").removeClass("zone-add");
+        })
+        /* 添加探测器-确定按钮点击事件 */
+        $(document).on("click",".zone-view .detector-newAdd .btn.query-detector",function(){
+            $(".zone-view").removeClass("zone-add");
+            var ids=[];
+            $(".detector-newAdd-table tbody>tr").each(function(){
+                ids.push($(this).children(":first").text());
+                var newNode = { name:$(this).children(":nth-child(7)").text(),id:$(this).children(":first").text()};
+                if($(this).children(":first").text()!="没有找到匹配的记录"){
+                    zTree.addNodes(zTree.getSelectedNodes()[0], newNode);
+                }
+            })
+            console.log("ids="+ids);
+        })
+        /* ---------------------------------------点击探测器下的操作事件------------------------------------------------------------------------------*/
+        /* 编辑按钮点击事件 */
+        $(document).on("click",".detector-view .edit-dataPoint",function(){
+            $(".detector-view").addClass("detector-edit");
+        })
+        /* 取消按钮点击事件 */
+        $(document).on("click",".detector-view .return-dataPoint",function(){
+            $(".detector-view").removeClass("detector-edit");
+        })
+        /* 写入按钮点击事件 */
+        $(document).on("click",".detector-view .writeIn-dataPoint",function(){
+            $(".detector-view").removeClass("detector-edit");
+            var dataPointsCache=[];//存储数据点表格当前页改变的数据
+            $("#dataPoint-current-table tbody>tr").each(function(){
+                if($(this).children("td:nth-child(3)").data("val")!=$(this).find("td:nth-child(3) input").val()
+                    ||$(this).children("td:nth-child(4)").data("val")!=$(this).find("td:nth-child(4) input").val()
+                    ||$(this).children("td:nth-child(5)").data("val")=="on"&&!$(this).find("td:nth-child(5) span i").hasClass("fa-toggle-on")
+                    ||$(this).children("td:nth-child(6)").data("val")=="off"&&!$(this).find("td:nth-child(6) span i").hasClass("fa-toggle-off")){
+                        dataPointsCache.push({
+                            id:$(this).find("td:first-child").text(),
+                            dataPoint:$(this).find("td:nth-child(2)").text(),
+                            crossLine:$(this).find("td:nth-child(3) input").val(),
+                            name:$(this).find("td:nth-child(4) input").val(),
+                            operation:$(this).find("td:nth-child(5) span i").hasClass("fa-toggle-off")?"off":"on"
+                        });
+                    }
+            })
+            console.log(dataPointsCache);
+        })
+        /* 数据点表格操作图标点击事件 */
+        $(document).on("click",".detector-view.detector-edit .dataPoint-current-table span>i",function(){
+            if($(this).hasClass("fa-toggle-on")){
+                $(this).removeClass("fa-toggle-on").addClass("fa-toggle-off");
+            }else{
+                $(this).removeClass("fa-toggle-off").addClass("fa-toggle-on");
+            }
+        })
+
+        var zTree;
+        var imgUrlUpload="../../img/common/upload.png";//添加编辑状态无图片时显示的背景图片
+        var imgUrlNone="../../img/common/upload.png";//查看状态无图片时显示的背景图片
+        var imgInfoCurr="";//当前将要提交的图片
+        $(document).ready(function(){
+            /* zTree树 */
+            zTree = $.fn.zTree.init($("#tree-obj"), setting, zNodes); 
+            fuzzySearch('tree-obj','#keyword',null,false);
+
+            var dragImgUpload = new DragImgUpload("#drop_area",{
+                callback:function (files,imgUrl) {
+                    //回调函数，可以传递给后台等等
+                    var file = files[0];
+                    onUpload(file,imgUrl);
+                }
+            })
+            /* 表格 */
+            $('#detector-current-table').bootstrapTable({//展示当前分区下绑定的探测器
+                pagination: true,
+                pageSize:2,
+                striped:true,
+                classes:'table table-point-i',
+                paginationShowPageGo: true,
+            });
+            $('#detector-newAdd-table').bootstrapTable({//当前分区新添加的探测器
+                pagination: false,
+                striped:true,
+                classes:'table table-point-i'
+            });
+            $('#detector-whole-table').bootstrapTable({//所有的探测器
+                pagination: true,
+                pageSize:2,
+                striped:true,
+                classes:'table table-point-i',
+                paginationShowPageGo: true,
+            });
+            $('#dataPoint-current-table').bootstrapTable({//所有的探测器
+                pagination: true,
+                pageSize:2,
+                striped:true,
+                classes:'table table-point-i',
+                paginationShowPageGo: true,
+            });
+        })
+    </script>
+    <title>添加大楼</title>
+</head>
+<body>
+    <div class="project-container" style="height: 100%">
+        <div class="project-content project-content-menu scrollBox"></div>
+        <div class="project-content project-content-ztree scrollBox">
+            <div class="pagecrumb">
+                <i class="fa fa-arrow-circle-o-left fa-lg"></i>
+                <h5>您当前的位置: 项目列表 > 项目基本信息 > 项目详情</h5>
+            </div>
+            <div class="search has-feedback">
+                <input type="text" class="form-control empty" id="keyword" placeholder="请输入" autoComplete='off'>
+                <span class="glyphicon glyphicon-search form-control-feedback" style="color:#198ccb;"></span>
+            </div>
+            <button type="button" class="btn addBuildB">
+                <i class="fa fa-plus-circle"></i>
+                <span>添加大楼</span>
+            </button>
+            <ul id="tree-obj" class="ztree"></ul>
+        </div>
+        <div class="project-content project-content-details scrollBox">
+            <div class="container-fluid addBuild" style="display: none">
+                <div class="save">
+                    <i class="fa fa-save"></i>
+                    <span>保存</span>
+                </div>
+                <div class="row">
+                    <div class="col-md-8 col-lg-8 col-md-offset-2 col-lg-offset-2">
+                        <div class="build-img">
+                            <!-- <img src="" alt="Smiley face" width="140" height="140" style="display: inline-block;"> -->
+                            <div id="drop_area" style="position: relative"></div>
+                            <button type="button" class="btn upload">
+                                <i class="fa fa-upload"></i>
+                                <span>上传</span>
+                            </button>   
+                        </div>
+                        <form class="build-info" action="" method="post">
+                            <div class="form-group">
+                                <label><span>*</span>大楼名称</label>
+                                <input type="text" class="form-control" name="name" placeholder="请输入大楼名称"/>
+                            </div>
+                            <div class="form-group">
+                                <label><span>*</span>大楼所在地区</label>
+                                <input type="text" class="form-control" name="region" placeholder="请输入大楼所在地区"/>
+                            </div>
+                            <div class="form-group">
+                                <label><span>*</span>大楼详细地址</label>
+                                <input type="text" class="form-control" name="address" placeholder="请输入大楼详细地址"/>
+                            </div>
+                            <div class="form-group">
+                                <label><span>*</span>大楼负责人</label>
+                                <input type="text" class="form-control" name="person" placeholder="请输入负责人姓名"/>
+                            </div>
+                            <div class="form-group">
+                                <label><span>*</span>负责人联系电话</label>
+                                <input type="text" class="form-control" name="phone" placeholder="请输入联系电话"/>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+            <div class="container-fluid zone-view" style="display: none;padding-top: 50px">
+                <div class="detector-current">
+                    <div class="operation pull-right">
+                        <button class="btn btn-default return-detector"><i class="fa fa-reply"></i><span>返回</span></button>
+                        <button class="btn btn-default edit-detector"><i class="fa fa-pencil"></i><span>编辑</span></button>
+                        <button class="btn btn-default add-detector"><i class="fa fa-plus-circle"></i><span>添加探测器</span></button>
+                    </div>
+                    <table id="detector-current-table" class="detector-current-table" data-id-field="id">
+                        <thead>
+                            <tr>
+                                <th data-align="center" data-field="id"></th>
+                                <th data-align="center">探测器</th>
+                                <th data-align="center">模板</th>
+                                <th data-align="center"><span>*</span>CT1(A)</th>
+                                <th data-align="center"><span>*</span>CT2(A)</th>
+                                <th data-align="center"><span>*</span>通讯周期(min)</th>
+                                <th data-align="center">命名</th>
+                                <th data-align="center">操作</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr data-id="1311">   <!-- 当前探测器对应左侧ztree下探测器的id,用于删除ztree下探测器 -->
+                                <td>1311</td>       <!-- 当前探测器的id,用于表格里探测器 -->
+                                <td title="7800001">7800001</td>
+                                <td title="EM721D-R">EM721D-R</td>
+                                <td title="12"><input type="text" class="form-control" placeholder="" value="12" autocomplete="off"></td>
+                                <td title="1"><input type="text" class="form-control" placeholder="" value="1" autocomplete="off"></td>
+                                <td title="30"><input type="text" class="form-control" placeholder="" value="30" autocomplete="off"></td>
+                                <td title="库房东北角"><input type="text" class="form-control" placeholder="" value="库房东北角" autocomplete="off"></td>
+                                <td><a href="#" class="tr-save">[保存]</a><a href="#" class="tr-untying">[解绑]</a></td>
+                            </tr>
+                            <tr data-id="1312">
+                                <td>1312</td>
+                                <td title="346342">346342</td>
+                                <td title="EM721D-R">EM721D-R</td>
+                                <td title="请输入1~5000的数值"><input type="text" class="form-control" placeholder="请输入1~5000的数值" value="" autocomplete="off"></td>
+                                <td title="1"><input type="text" class="form-control" placeholder="" value="1" autocomplete="off"></td>
+                                <td title="30"><input type="text" class="form-control" placeholder="" value="30" autocomplete="off"></td>
+                                <td title="请输入名称"><input type="text" class="form-control" placeholder="请输入名称" value="" autocomplete="off"></td>
+                                <td><a href="#" class="tr-save">[保存]</a><a href="#" class="tr-untying">[解绑]</a></td>
+                            </tr>
+                            <tr data-id="1313">
+                                <td>1313</td>
+                                <td title="4511113">4511113</td>
+                                <td title="EM721D-R">EM721D-R</td>
+                                <td title="12"><input type="text" class="form-control" placeholder="" value="12" autocomplete="off"></td>
+                                <td title="1"><input type="text" class="form-control" placeholder="" value="1" autocomplete="off"></td>
+                                <td title="30"><input type="text" class="form-control" placeholder="" value="30" autocomplete="off"></td>
+                                <td title="传达室内"><input type="text" class="form-control" placeholder="" value="传达室内" autocomplete="off"></td>
+                                <td><a href="#" class="tr-save">[保存]</a><a href="#" class="tr-untying">[解绑]</a></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <div class="detector-newAdd">
+                    <div class="operation pull-right">
+                        <button class="btn btn-default query-detector"><span>确定</span></button>
+                        <button class="btn btn-default cancel-detector"><span>取消</span></button>
+                    </div>
+                    <table id="detector-newAdd-table" class="detector-newAdd-table" data-id-field="id">
+                        <thead>
+                            <tr>
+                                <th data-align="center" data-field="id"></th>
+                                <th data-align="center" data-field="detector">探测器</th>
+                                <th data-align="center" data-field="template">模板</th>
+                                <th data-align="center" data-field="ct1">CT1(A)</th>
+                                <th data-align="center" data-field="ct2">CT2(A)</th>
+                                <th data-align="center" data-field="cycle">通讯周期(min)</th>
+                                <th data-align="center" data-field="name">命名</th>
+                                <th data-align="center" data-field="operation">操作</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <!-- <td>0009</td>
+                            <td>0000002</td>
+                            <td>EM721D-R</td>
+                            <td>5000</td>
+                            <td>1</td>
+                            <td>30</td>
+                            <td>传达室内</td>
+                            <td><a href="#" class="tr-untying">[解绑]</a></td> -->
+                        </tbody>
+                    </table>
+                </div>
+                <div class="detector-whole">
+                    <div class="operation pull-left">
+                        <button class="btn btn-default detector-all active"><span>全部</span></button>
+                        <button class="btn btn-default detector-bind"><span>已绑定</span></button>
+                        <button class="btn btn-default detector-unBind"><span>未绑定</span></button>
+                    </div>
+                    <div class="condition has-feedback pull-right">
+                        <input type="text" class="form-control empty" placeholder="请输入探测器IMEI" autoComplete='off'>
+                        <span class="glyphicon glyphicon-search form-control-feedback" style="color:#198ccb;"></span>
+                    </div>
+                    <table id="detector-whole-table" class="detector-whole-table">
+                        <thead>
+                            <tr>
+                                <th data-align="center" data-checkbox=true></th>
+                                <th data-align="center" data-field="id"></th>
+                                <th data-align="center" data-field="position" data-sortable=true>绑定位置</th>
+                                <th data-align="center" data-field="detector">探测器</th>
+                                <th data-align="center" data-field="template" data-sortable=true>模板</th>
+                                <th data-align="center" data-field="ct1">CT1(A)</th>
+                                <th data-align="center" data-field="ct2">CT2(A)</th>
+                                <th data-align="center" data-field="cycle">通讯周期(min)</th>
+                                <th data-align="center" data-field="name">命名</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr class="bind-tr"><!-- 已绑定探测器添加此class -->
+                                <td></td>
+                                <td>0001</td>  <!-- 当前探测器的id,用于添加到另一表格用于删除该探测器 -->
+                                <td title="住宿大楼-F1-防火区2">住宿大楼-F1-防火区2</td>
+                                <td title="0000001">0000001</td>
+                                <td title="EM721D-R">EM721D-R</td>
+                                <td title="12">12</td>
+                                <td title="1">1</td>
+                                <td title="30">30</td>
+                                <td title="传达室内">传达室内</td>
+                            </tr>
+                            <tr>
+                                <td></td>
+                                <td>0002</td>
+                                <td title="住宿大楼-B1-防火区1">住宿大楼-B1-防火区1</td>
+                                <td title="0000002">0000002</td>
+                                <td title="EM721D-R">EM721D-R</td>
+                                <td title="5000">5000</td>
+                                <td title="1">1</td>
+                                <td title="30">30</td>
+                                <td title="楼梯拐角">楼梯拐角</td>
+                            </tr>
+                            <tr class="bind-tr">
+                                <td></td>
+                                <td>0003</td>
+                                <td title="住宿大楼-F1-防火区2">住宿大楼-F1-防火区2</td>
+                                <td title="0000001">0000001</td>
+                                <td title="EM721D-R">EM721D-R</td>
+                                <td title="12">12</td>
+                                <td title="1">1</td>
+                                <td title="30">30</td>
+                                <td title="传达室内1">传达室内1</td>
+                            </tr>
+                            <tr>
+                                <td></td>
+                                <td>0004</td>
+                                <td title="住宿大楼-B1-防火区1">住宿大楼-B1-防火区1</td>
+                                <td title="0000002">0000002</td>
+                                <td title="EM721D-R">EM721D-R</td>
+                                <td title="5000">5000</td>
+                                <td title="1">1</td>
+                                <td title="30">30</td>
+                                <td title="楼梯拐角1">楼梯拐角1</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            <div class="container-fluid detector-view" style="display: none;padding-top: 50px">
+                <div class="row detector-info">
+                    <div class="col-md-2 col-lg-2">
+                        <div>
+                            <span>探测器：</span><span>1558</span>
+                        </div>
+                    </div>
+                    <div class="col-md-2 col-lg-2">
+                        <div>
+                            <span>模板：</span><span>EM721D-R</span>
+                        </div>
+                    </div>
+                    <div class="col-md-2 col-lg-2">
+                        <div>
+                            <span>CT1：</span><span>26A</span>
+                        </div>
+                    </div>
+                    <div class="col-md-2 col-lg-2">
+                        <div>
+                            <span>CT2：</span><span>5A</span>
+                        </div>
+                    </div>
+                    <div class="col-md-2 col-lg-2">
+                        <div>
+                            <span>通讯周期：</span><span>3min</span>
+                        </div>
+                    </div>
+                    <div class="col-md-2 col-lg-2">
+                        <div>
+                            <span>命名：</span><span>库房东北角</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="dataPoint-current">
+                    <div class="operation pull-right">
+                        <button class="btn btn-default return-dataPoint"><i class="fa fa-reply"></i><span>取消</span></button>
+                        <button class="btn btn-default edit-dataPoint"><i class="fa fa-pencil"></i><span>编辑</span></button>
+                        <button class="btn btn-default writeIn-dataPoint"><i class="fa fa-pencil-square-o"></i><span>写入</span></button>
+                    </div>
+                    <table id="dataPoint-current-table" class="dataPoint-current-table">
+                        <thead>
+                            <tr>
+                                <th data-align="center"></th>
+                                <th data-align="center">数据点</th>
+                                <th data-align="center"><span>*</span>越线值(mA)</th>
+                                <th data-align="center">名称</th>
+                                <th data-align="center">操作</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>1311</td>       <!-- 当前数据点的id -->
+                                <td title="7800001">YC_lr1</td>
+                                <td title="100" data-val="100"><input type="text" class="form-control" placeholder="" value="100" autocomplete="off"></td>
+                                <td title="消防火线" data-val="消防火线"><input type="text" class="form-control" placeholder="" value="消防火线" autocomplete="off"></td>
+                                <td data-val="on"><span><i class="fa fa-toggle-on fa-lg"></i></span></td>
+                            </tr>
+                            <tr>
+                                <td>1312</td>
+                                <td title="346342">YC_T1</td>
+                                <td title="12" data-val="12"><input type="text" class="form-control" placeholder="" value="12" autocomplete="off"></td>
+                                <td title="请输入名称" data-val=""><input type="text" class="form-control" placeholder="请输入名称" value="" autocomplete="off"></td>
+                                <td data-val="off"><span><i class="fa fa-toggle-off fa-lg"></i></span></td>
+                            </tr>
+                            <tr>
+                                <td>1313</td>
+                                <td title="4511113">YC_T2</td>
+                                <td title="50" data-val="50"><input type="text" class="form-control" placeholder="" value="50" autocomplete="off"></td>
+                                <td title="自动门火线" data-val="自动门火线"><input type="text" class="form-control" placeholder="" value="自动门火线" autocomplete="off"></td>
+                                <td data-val="off"><span><i class="fa fa-toggle-off fa-lg"></i></span></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 模态框 -->
+    <div class="modal fade addBuildCheck" id="addBuildCheck" tabindex="-1" role="dialog" aria-labelledby="">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal">
+                        <span aria-hidden="true">&times;</span> <span class="sr-only">Close</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <div class="warning"><i class="fa fa-exclamation-circle fa-2x"></i><span>请完善必填项信息</span></div>
+                </div>
+                <div class="modal-footer">
+                    <button class="col-md-2 col-lg-2 btn btn-sm btn-cloud col-lg-offset-7 col-lg-offset-7" data-dismiss="modal">确定</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="modal fade buildRemove" id="buildRemove" tabindex="-1" role="dialog" aria-labelledby="">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal">
+                        <span aria-hidden="true">&times;</span> <span class="sr-only">Close</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <div class="warning"><i class="fa fa-exclamation-circle fa-2x"></i><span>确定要删除大楼吗？</span></div>
+                    <div class="tips"><span>删除后不可恢复,如已绑定探测器,将自动解绑。</span></div>
+                </div>
+                <div class="modal-footer">
+                    <button class="col-md-2 col-lg-2 btn btn-sm btn-cloud col-lg-offset-4 col-lg-offset-4">确定</button>
+                    <button class="col-md-2 col-lg-2 btn btn-sm btn-default" data-dismiss="modal">取消</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="modal fade floorRemove" id="floorRemove" tabindex="-1" role="dialog" aria-labelledby="">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal">
+                        <span aria-hidden="true">&times;</span> <span class="sr-only">Close</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <div class="warning"><i class="fa fa-exclamation-circle fa-2x"></i><span>确定要删除该楼层吗？</span></div>
+                    <div class="tips"><span>删除后不可恢复,如已绑定探测器,将自动解绑。</span></div>
+                </div>
+                <div class="modal-footer">
+                    <button class="col-md-2 col-lg-2 btn btn-sm btn-cloud col-lg-offset-4 col-lg-offset-4">确定</button>
+                    <button class="col-md-2 col-lg-2 btn btn-sm btn-default" data-dismiss="modal">取消</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="modal fade zoneRemove" id="zoneRemove" tabindex="-1" role="dialog" aria-labelledby="">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal">
+                        <span aria-hidden="true">&times;</span> <span class="sr-only">Close</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <div class="warning"><i class="fa fa-exclamation-circle fa-2x"></i><span>确定要删除该防火分区吗？</span></div>
+                    <div class="tips"><span>删除后不可恢复,如已绑定探测器,将自动解绑。</span></div>
+                </div>
+                <div class="modal-footer">
+                    <button class="col-md-2 col-lg-2 btn btn-sm btn-cloud col-lg-offset-4 col-lg-offset-4">确定</button>
+                    <button class="col-md-2 col-lg-2 btn btn-sm btn-default" data-dismiss="modal">取消</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="modal fade detectorRemove" id="detectorRemove" tabindex="-1" role="dialog" aria-labelledby="">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal">
+                        <span aria-hidden="true">&times;</span> <span class="sr-only">Close</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <div class="warning"><i class="fa fa-exclamation-circle fa-2x"></i><span>确定要解绑该探测器吗？</span></div>
+                </div>
+                <div class="modal-footer">
+                    <button class="col-md-2 col-lg-2 btn btn-sm btn-cloud col-lg-offset-4 col-lg-offset-4">确定</button>
+                    <button class="col-md-2 col-lg-2 btn btn-sm btn-default" data-dismiss="modal">取消</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="modal fade floorAdd" id="floorAdd" tabindex="-1" role="dialog" aria-labelledby="">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal">
+                        <span aria-hidden="true">&times;</span> <span class="sr-only">Close</span>
+                    </button>
+                    <h5 class="modal-title">添加楼层</h5>
+                </div>
+                <div class="modal-body">
+                    <form class="form-inline">
+                        <div class="form-group">
+                            <select class="form-control selectpicker type">
+                                <option>地上</option>
+                                <option>地下</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <span>第</span>
+                            <input type="" class="form-control" id="" placeholder="">
+                            <span>层</span>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button class="col-md-2 col-lg-2 btn btn-sm btn-cloud col-lg-offset-4 col-lg-offset-4">确定</button>
+                    <button class="col-md-2 col-lg-2 btn btn-sm btn-default" data-dismiss="modal">取消</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="modal fade zoneAdd" id="zoneAdd" tabindex="-1" role="dialog" aria-labelledby="">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal">
+                        <span aria-hidden="true">&times;</span> <span class="sr-only">Close</span>
+                    </button>
+                    <h5 class="modal-title">添加防火分区</h5>
+                </div>
+                <div class="modal-body">
+                    <form class="form-inline">
+                        <div class="form-group">
+                            <span>名称</span>
+                            <input type="" class="form-control" id="" placeholder="">
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button class="col-md-2 col-lg-2 btn btn-sm btn-cloud col-lg-offset-4 col-lg-offset-4">确定</button>
+                    <button class="col-md-2 col-lg-2 btn btn-sm btn-default" data-dismiss="modal">取消</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

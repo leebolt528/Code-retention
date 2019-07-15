@@ -1,0 +1,311 @@
+*, *:before, *:after {
+    box-sizing: inherit;
+}
+html {
+    box-sizing: border-box;
+    -ms-text-size-adjust: 100%;
+    -webkit-text-size-adjust: 100%;
+}
+body {
+    margin: 0;
+}
+body,html{
+    height:100%;
+    font-family: "微软雅黑";
+    font-size: 14px;
+    line-height: 1.428571429;
+    color: #333;
+    overflow-y: hidden;
+}
+.text-align-c{
+    text-align: center;
+}
+ul{
+    margin: 0;
+    padding:0;
+}
+li {
+    list-style: none;
+}
+label{
+    font-weight: normal;
+}
+.form-control{
+    border-radius: 0;
+}
+textarea.form-control{
+    resize:vertical;
+}
+.btn{
+    border-radius: 0;
+}
+.btn.active.focus, 
+.btn.active:focus,
+.btn.focus,
+.btn:active.focus,
+.btn:active:focus,
+.btn:focus {
+    outline: none;
+}
+.btn-cloud{
+    color: #fff; 
+    background-color: #198ccb;
+    border-color: #198ccb; 
+}
+hr{
+    margin-top: 15px;
+    margin-bottom: 15px;
+    border-top: 1px solid #ddd;
+}
+/* 地图水印 */
+.BMap_cpyCtrl {
+    display:none;
+}
+.anchorBL{
+    display:none;
+}
+.BMap_stdMpCtrl{
+    display: block;
+}
+/*滚动条整体样式*/
+.scrollBox::-webkit-scrollbar {
+    width: 5px;
+    background: #f3f3f3;
+}
+/*滚动条里面小方块*/
+.scrollBox::-webkit-scrollbar-thumb {
+    border-radius: 5px;
+    background: #c0c0c0;
+    height: 120px;
+}
+  /*滚动条里面轨道*/
+.scrollBox::-webkit-scrollbar-track {
+    border-radius: 5px;
+    background: rgba(0, 0, 0, 0.1);
+}
+
+.cloud-container,
+.cloud-content-l,
+.cloud-content-r,
+.cloud-content-l>div,
+.cloud-content-r>div,
+.cloud-menu .cloud-Lbar{
+    height:100%;
+}
+.cloud-content-l>div,
+.cloud-content-r>div{
+    overflow-y: auto;
+}
+.cloud-content-l{
+    float: left;
+}
+.cloud-menu{
+    width:150px;
+    position: relative;
+}
+.cloud-menu .cloud-Lbar{
+    overflow-y: auto;
+    background-color:#edf0f5;
+    bottom: 0px;
+}
+.cloud-menu .cloud-Lbar li:first-child span{
+    padding:20px 30px;
+    height:84px;
+    font-weight: 700;
+    display: block;
+    line-height: 42px;
+    background-color: #d9dde6;
+}
+.cloud-menu .cloud-Lbar li a {
+    display: block;
+    padding:20px 30px;
+    height: 52px;
+    line-height: 12px;
+    color:#333;
+    text-decoration: none;
+}
+.cloud-menu .cloud-Lbar li.treeview.active > a {
+    background-color: #fff;
+}
+.cloud-shrink-L{
+    left:0;
+}
+.cloud-shrink-R{
+    right:0;
+}
+.cloud-shrink-L,
+.cloud-shrink-R{
+    position: absolute;
+    height: 48px !important;
+    width: 18px;
+    top: 46%;
+    cursor: pointer;
+}
+.cloud-shrink-L,
+.cloud-shrink-R.shrink-moved{
+    background: url(../../img/common/rightbar.png) no-repeat;
+}
+.cloud-shrink-L.shrink-moved{
+    left:132px;
+}
+.cloud-shrink-R.shrink-moved{
+    right:382px;
+}
+.cloud-shrink-L.shrink-moved,
+.cloud-shrink-R{
+    background: url(../../img/common/leftbar.png) no-repeat;
+}
+.cloud-menu-r{
+    margin-left: 150px;
+}
+.cloud-menu-inner{
+    width:312px;
+    float:left;
+    border-right: 1px solid #ddd;
+}
+.cloud-menu-inner,
+.cloud-menu-content{
+    padding:30px 20px;
+}
+.cloud-content-head{
+    height:35px;
+    margin:0;
+}
+.cloud-content-head>.title{
+    box-shadow: #198ccb 3px 0 inset;
+    text-indent: 10px;
+    display:inline-block;
+    vertical-align: -webkit-baseline-middle;
+}
+.cloud-content-head>button{
+    float:right;
+}
+.cloud-content-head>button>.add{
+    margin-left: 6px;
+}
+.cloud-content-chart .tab-content>div{
+    height:160px;
+}
+.cloud-content-chart .baiduMaps{
+    height:203px;
+}
+.cloud-content-chart{
+    margin-bottom: 30px;
+}
+.cloud-describe-l{
+    box-shadow: 5px 0 5px rgba(0, 0, 0, 0.1);
+}
+.cloud-describe-l .cloud-describe-content{
+    padding-top:40px;
+    padding-bottom:40px;
+}
+.cloud-describe-l .cloud-describe-backout{
+    margin:0 0 38px 40px;
+    height: 20px;
+    color: #198ccb;
+}
+.cloud-describe-l .cloud-backout-img{
+    background: url(../../img/common/backout.png) no-repeat;
+    height: 20px;
+    width: 16px;
+    vertical-align: middle;
+    display: inline-block;
+    margin-right: 4px;
+}
+.cloud-describe{
+    float: right;
+    width: 400px;
+}
+.cloud-describe-detail{
+    padding: 20px 0px;
+}
+.cloud-describe-detail hr{
+    margin-left:20px;
+    margin-right: 20px;
+}
+.cloud-describe-detail .cloud-describe-title{
+    padding:0px 20px;
+    cursor: pointer;
+}
+.cloud-describe-detail .cloud-describe-title i,
+.dark-textpwd,
+.add-dividing-laber i,
+.edit-property i{
+    color:#a7b7c7;
+}
+.cloud-describe-detail .cloud-describe-title-desb{
+    font-size: 12px;
+    padding:10px 20px 0 20px;
+    line-height: 20px;
+}
+.cloud-describe-detail .cloud-describe-title-desb.cloud-desb-none{
+    display:none;
+}
+.row .col-padleft{
+    padding-left: 25px;
+}
+.row .col-padtop{
+    padding-top: 50px;
+    padding-left: 40px;
+}
+.row .col-child-padleft>div{
+    padding-left: 0px;
+}
+.tab-content.tab-content-mg{
+    margin:20px 0;
+}
+/* 密码显示效果 */
+.dark-textpwd i,
+.plain-textpwd i,
+.edit-property i{
+    cursor: pointer;
+}
+.plain-textpwd{
+    color:#333;
+}
+/* layui */
+.layui-inline .layui-input{
+    height:34px;
+    width:250px;
+}
+/* 百度地图 */
+.baiduMapsAdd .location-tool{
+    height: 50px;
+    line-height:50px;
+    background-color:rgba(122,122,122,0.7);
+    position: absolute;
+    bottom: 0px;
+    width:calc(100% - 30px)!important;
+    width: -webkit-calc(100% - 30px)!important;
+    width:-moz-calc(100% - 30px)!important;
+}
+.baiduMapsAdd .location-tool .search>input{
+    height:35px;
+    margin-top:7px;
+    background-color:rgba(122,122,122,0.7);
+    border:1px solid #555;
+}
+.baiduMapsAdd .location-tool input.form-control,
+.baiduMapsAdd .location-tool .coordinate{
+    color:#fff;
+}
+.baiduMapsAdd .location-tool .coordinate .longitude{
+    margin-right:10px;
+}div#rMenu {
+    position:absolute; 
+    visibility:hidden;
+     top:0;
+     padding: 2px;
+}
+div#rMenu ul li{
+    cursor: pointer;
+}
+.dropright .dropdown-menu{
+    right:0px;
+    left:auto;
+    min-width: 100px;
+}
+.dropright .dropdown-menu i{
+    margin-right: 10px;
+    color:#198ccb !important;
+}

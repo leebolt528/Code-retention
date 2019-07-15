@@ -1,0 +1,81 @@
+table tbody tr td{
+    vertical-align: middle!important;
+}
+.cloud-content-table .condition{
+    height:35px;
+    margin-bottom: 10px;
+    float:right;
+}
+.cloud-content-table .condition .layui-inline{
+    margin-right: 5px;
+}
+.cloud-content-table .operation,
+.cloud-content-table .checkbox{
+    float:left;
+}
+.cloud-content-table .tips{
+    line-height: 34px;
+    float: left;
+    padding: 0px 15px!important;
+}
+.cloud-content-table .operation button>i,
+.cloud-content-table .operation button>span{
+    margin-right:4px;
+}
+.cloud-content-table .operation button>span{
+    width:14px;
+    height:14px;
+    display:inline-block;
+    vertical-align: middle;
+}
+.cloud-content-table .operation button.remove{
+    pointer-events:none;
+}
+.cloud-content-table .operation button.scan>span{
+    background:url(../../img/common/scan.png) no-repeat;
+}
+/* 按钮式下拉框弹出向左 */
+.btn-group.open .dropdown-toggle{
+    box-shadow: none;
+}
+.table.table-point-i i{
+    cursor: pointer;
+    color: #a7b7c7;
+}
+.table.table-point-i .dropright.open i{
+    color:#198ccb;
+}
+.tab-content.tab-content-mg{
+    margin:20px 0;
+}
+.tab-content.tab-content-mg .cloud-content-head,
+.tab-content.tab-content-mg .tab-content-save{
+    margin-top:20px;
+}
+.tab-content.tab-content-mg .bootstrap-table{
+    margin-bottom:10px;
+}
+.bootstrap-table .fixed-table-body{
+    overflow-x: unset;
+    overflow-y: unset;
+}
+.switchColumns thead .fa-angle-right{
+    color:#198ccb;
+    width:15px;
+}
+.switchColumns thead .fa-angle-left{
+    pointer-events:none;
+    width:15px;
+}
+table .file-caption{
+    padding: 5px 10px;
+    font-size: 12px;
+    line-height: 1.5;
+    height: 29.6px;
+}
+.modal .cloud-content-table{
+    margin-top:50px;
+}
+.cloud-content-table-device{
+    margin-top:30px;
+}

@@ -1,0 +1,180 @@
+.ztree li span.button{
+    background-image: url(../img/treeBackground.png);
+}
+.ztree li span.button.switch {
+    width: 30px;
+    height: 30px;
+}
+.ztree li span.button.roots_close {
+    background-position: -67px -6px;
+}
+.ztree li span.button.center_close {
+    background-position: -67px -38px;
+}
+.ztree li span.button.bottom_close {
+    background-position: -67px -71px;
+}
+.ztree li span.button.center_close {
+    background-position: -67px -38px;
+}
+.ztree li span.button.bottom_open {
+    background-position: -41px -71px;
+}
+.ztree li span.button.roots_open {
+    background-position: -41px -6px;
+}
+.ztree li span.button.center_open {
+    background-position: -41px -38px;
+}
+.ztree li ul.line {
+    background: url(../img/line3.png) 0 0 repeat-y;
+}
+.ztree li span {
+    line-height: 30px;
+    margin-right: 2px;
+    display: inline-block;
+    height: 30px;
+}
+.ztree li a {
+    padding-right: 3px;
+    margin: 0;
+    cursor: pointer;
+    height: 30px;
+    color: #131c2e;
+    background-color: transparent;
+    text-decoration: none;
+    display: inline-block;
+    padding: 0;
+    line-height: 30px;
+    vertical-align: middle;
+    font-size: 13px;
+    font-weight: normal;
+    font-stretch: normal;
+}
+.ztree li a.curSelectedNode {
+    padding-top: 0px;
+    background-color: #fff;
+    color: black;
+    height: 30px;
+    opacity: 0.8;
+}
+.ztree li span.button.ico_docu{
+    display: none;
+}
+.ztree{
+    position: relative;
+}
+.tree-container{
+    position: relative;
+}
+.tree-item-detail{
+    position: absolute;
+    display: none;
+    background: #eee;
+    background-color: #ffffff;
+    box-shadow: 0px 4px 12px 0px rgba(0, 0, 0, 0.15);
+    cursor: default;
+}
+.tree-item-detail a{
+    height: 30px;
+    width: 30px;
+    text-align: center;
+    display: inline-block;
+    position: relative;
+    cursor: pointer;
+}
+.tree-item-detail a:hover{
+    border: solid 2px #dee0e3;
+    background-color: #f9f7f7;
+}
+.tree-item-detail a img{
+    position: absolute;
+    top: 50%;
+    left: 0;
+    right: 0;
+    margin: auto;
+}
+.tree-item-name{
+    display: inline-block;
+    height: 30px;
+    line-height: 30px;
+    width: 125px;
+    text-align: left;
+    overflow: hidden;
+    font-size: 13px;
+	font-weight: normal;
+	font-stretch: normal;
+	letter-spacing: 0px;
+    color: #333333;
+    padding-left: 15px;
+}
+.reduce-circle{
+    position: absolute;
+    top: 20px;
+    right: 30px;
+    width: 40px;
+    height: 40px;
+    background-color: #818181;
+    box-shadow: 0px 3px 8px 0px #818181;
+    border-radius: 40px;
+    cursor: pointer;
+}
+.reduce-circle img{
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    left: 0;
+    right: 0;
+    margin: auto;
+}
+.reduce-help{
+    position: absolute;
+    right: 50px;
+    width: 120px;
+    height: 30px;
+    background-color: #818181;
+    color: #fff;
+    line-height: 30px;
+    text-align: center;
+    top: 6px;
+    border-radius: 5px;
+    box-shadow: 0px 3px 8px 0px rgba(129, 129, 129, 0.84);
+    display: none;
+}
+.reduce-help .right-arrow{
+    position: absolute;
+    right: -5px;
+    background-color: #818181;
+    width: 10px;
+    height: 10px;
+    top: 10px;
+    transform: rotate(45deg);
+}
+.reduce-circle:hover .reduce-help{
+    display: block;
+}
+/*节点操作按钮*/
+.ztree li span.button.edit,
+.ztree li span.button.edit:hover{
+    background-image: url(../img/treeEdit.png);
+    background-position: 0 0;
+    vertical-align:middle;
+    margin-top: 5px;
+}
+.ztree li span.button.remove,
+.ztree li span.button.remove:hover{
+    background-image: url(../img/treeDelete.png);
+    background-position: 0 0;
+    vertical-align:middle;
+    margin-top: 5px;
+}
+.ztree li span.button.add,
+.ztree li span.button.add:hover{
+    background-image: url(../img/treeAdd.png);
+    background-position: 0 0;
+    vertical-align:middle;
+    margin-top: 6px;
+}
+.ztree li a.curSelectedNode{
+    border:0px;
+}
