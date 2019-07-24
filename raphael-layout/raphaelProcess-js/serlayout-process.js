@@ -148,15 +148,46 @@ function addShapNode(ui) {
     tag.addNode(options,"create");
     var data = tag.getData(idflowChartId);
     var nodearray = data.nodearray;
+    var inparameter = [];
+    var outparameter = [];
     for (var i = 0; i < nodearray.length; i++) {
         //拖拽过来添加接口节点
         if (nodeId == nodearray[i].nodeId) {
             var internode = nodearray[i];
-            var componentType = '0';//组件类型 1自定义组件 0普通
-            var interSerNode = new interfaceSerNodeObj(data.flowChartId, serVerId, internode.nodeId, nodeName, "rectangle", "3",internode.componentsId,"",
-                internode.clientX, internode.clientY, internode.nodeWidth, internode.nodeHeight, internode.nodeRadius, "",internode.startSet, internode.endSet, internode.setline,
-                "", "", "", "", "", "", "", "", "", "", "", "", [], [], "", "", componentType,true,nodeName);
-            serNodeArray.push(interSerNode);
+
+            /*继承模板返回的参数*/
+            $.ajax({
+                url: $webpath + '/servflow/v1/component/singleComponent',
+                method: 'GET',
+                contentType: "application/json;charset=utf-8",
+                dataType: "json",
+                data: {
+                    componentsId: componentsId
+                },
+                success: function (dataInfo) {
+                    JSON.parse(dataInfo.data.inputResume).map(function (item) {
+                        item.type="0";
+                        if(item.parentId=="0"){
+                            item.parentId=null;
+                        }
+                    });
+                    JSON.parse(dataInfo.data.outputResume).map(function (item) {
+                        item.type="1";
+                        if(item.parentId=="0"){
+                            item.parentId=null;
+                        }
+                    });
+                    inparameter= JSON.parse(dataInfo.data.inputResume);
+                    outparameter= JSON.parse(dataInfo.data.outputResume);
+                    //firstBoolean=false;
+
+                    var componentType = '0';//组件类型 1自定义组件 0普通
+                    var interSerNode = new interfaceSerNodeObj(data.flowChartId, serVerId, internode.nodeId, nodeName, "rectangle", "3",internode.componentsId,"",
+                        internode.clientX, internode.clientY, internode.nodeWidth, internode.nodeHeight, internode.nodeRadius, "",internode.startSet, internode.endSet, internode.setline,
+                        "", "", "", "", "", "", "", "", "", "", "", "", inparameter, outparameter, "", "", componentType,true,nodeName);
+                    serNodeArray.push(interSerNode);
+                }
+            });
         }
     }
 }
@@ -237,30 +268,6 @@ function serInfoLayerRequest(node){
                     '</body>' +
                     '</html>';
                 sideModalObj.addHtml(page);
-                /*继承模板返回的参数*/
-                for (var i = 0; i < serNodeArray.length; i++) {
-                    if (updateflag != "update"&& serNodeArray[i].firstBoolean && serNodeArray[i].nodeId == currentNode.data("nodeId")) {
-                        JSON.parse(dataInfo.data.inputResume).map(function (item) {
-                            item.type="0";
-                            if(item.parentId=="0"){
-                                item.parentId=null;
-                            }
-                        });
-                        JSON.parse(dataInfo.data.outputResume).map(function (item) {
-                            item.type="1";
-                            if(item.parentId=="0"){
-                                item.parentId=null;
-                            }
-                        });
-                        serNodeArray[i].inparameter= JSON.parse(dataInfo.data.inputResume);
-                        serNodeArray[i].outparameter= JSON.parse(dataInfo.data.outputResume);
-                        serNodeArray[i].firstBoolean=false;
-
-                        baseserNodeObj.inparameter = JSON.parse(dataInfo.data.inputResume);
-                        baseserNodeObj.outparameter = JSON.parse(dataInfo.data.outputResume);
-                        baseserNodeObj.firstBoolean=false;
-                    }
-                }
            /* },200);*/
         }
     });

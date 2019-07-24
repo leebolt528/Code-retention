@@ -112,7 +112,7 @@ function startSerNodeObj(flowChartId, serVerId, nodeId, nodeName, nodeType, node
  * @param inCharset 请求参数字符集
  * @param outCharset 响应参数字符集
  * @param componentType 组件类型
- * @param firstBoolean 是否第一次点击节点请求模板，用于继承模板参数
+ * @param firstBoolean 是否第一次点击节点请求模板，用于继承模板参数//已无用
  * @param ruleNodeType 组件类型名称
  * @returns
  */
