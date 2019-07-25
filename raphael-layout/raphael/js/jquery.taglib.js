@@ -3179,7 +3179,6 @@
                                         return;
                                     }
                                 }
-                                $("#"+_setting.canvasid + " .loading-table").empty();
                                 if(update == "create"){
                                     g.canvas = new Raphael(canvasid, g.cwidth, g.cheight);
                                     _setting.canvas = g.canvas;
@@ -3187,6 +3186,7 @@
                                     _ring.createRing(g);
                                     _tool.drawGrid(g.cwidth, g.cheight);
                                 }
+                                $("#"+_setting.canvasid + " .loading-table").remove();
                                 var scan;
                                 for (var i = 0; i < data.length; i++) {
                                     if (data[i].nodeId !== null && data[i].nodeId !== undefined) {

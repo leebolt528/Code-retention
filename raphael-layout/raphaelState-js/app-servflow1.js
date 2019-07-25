@@ -121,11 +121,25 @@ $(function(){
              data: JSON.stringify(params),
              async: false,
              success: function (dataAll) {
-                 dataAll.data.data.map(function (item, index) {
-                     componentsImgMap.set(item.componentsId, [item.componentsImg, item.componentsName]);
-                 });
+                if(dataAll.data != ""){
+                    dataAll.data.data.map(function (item, index) {
+                        componentsImgMap.set(item.componentsId, [item.componentsImg, item.componentsName]);
+                    });
 
-                 drawPages(true);
+                    drawPages(true);
+                }else{
+                    var noDataHtml = '<div style="height: 100%;"><div class="nodata-table" style="height: 100%;">' +
+                        '    <div><img src="'+ $resContextPath +'/img/common/nodata.png">' +
+                        '    <span class="nodata-text">暂无数据</span></div>' +
+                        '</div></div>';
+                    $(".page-content.topology #state_canvas").html(noDataHtml);
+                    var $logsDiv = $(".topology .right-content .bcloud-content");
+                    var noDataHtml = '<div style="height: 100%;"><div class="nodata-table" style="height: 100%;">' +
+                        '    <div><img src="'+$resContextPath+'/img/common/nodata.png">' +
+                        '    <span class="nodata-text">暂无数据</span></div>' +
+                        '</div></div>';
+                    $logsDiv.html(noDataHtml);
+                }
              }
          });
     };
