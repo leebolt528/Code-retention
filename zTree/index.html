@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <!-- <link rel="stylesheet" href="./css/zTreeStyle/zTreeStyle.css"> -->
+    <!-- <link rel="stylesheet" href="./css/metroStyle/metroStyle.css"> -->
+    <link rel="stylesheet" href="./css/blogicStyle/blogicStyle.css">
+    <script type="text/javascript" src='./js/jquery-1.4.4.min.js'></script>
+    <script type="text/javascript" src='./js/jquery.ztree.all.js'></script>
+    <title>Document</title>
+    <script>
+        var zTreeObj;
+        // zTree 的参数配置，深入使用请参考 API 文档（setting 配置详解）
+        var setting = {
+            check:{
+                enable:true
+            },
+            view : {
+				showIcon : showIconForTree,
+			}
+        };
+        function showIconForTree(treeId, treeNode) {
+            return treeNode.isParent;
+        };
+        // zTree 的数据属性，深入使用请参考 API 文档（zTreeNode 节点数据详解）
+        var zNodes = [
+        {name:"选择用户权限", open:true},
+            {name:"选择用户权限", open:true, children:[
+                {name:"机器日志分析", open:true,children:[
+                    {name:"搜索", open:true,children:[
+                        {name:"搜索的所有二级功能"}
+                    ]}, 
+                    {name:"仪表板", open:true,children:[
+                        {name:"搜索的所有二级功能"}
+                    ]},
+                    {name:"数据集"}, 
+                    {name:"告警"},
+                    {name:"仪表板", open:true,children:[
+                        {name:"搜索的所有二级功能"}
+                    ]},
+                ]},
+                {name:"机器日志分析1", open:true,children:[
+                        {name:"搜索的所有二级功能"}
+                    ]}
+            ]},
+            {name:"选择用户权限", open:true},
+            {name:"选择用户权限", open:true,children:[
+                        {name:"搜索的所有二级功能"}
+                    ]},
+           /*  {name:"选择用户权限", open:true},
+             {name:"选择用户权限", open:true},
+            {name:"选择用户权限", open:true}, */
+               
+        ];
+        $(document).ready(function(){
+            zTreeObj = $.fn.zTree.init($("#treeDemo"), setting, zNodes);
+        });
+    </script>
+</head>
+<body>
+    <div style="width: 500px;margin: 200px auto;">
+        <ul id="treeDemo" class="ztree"></ul>
+    </div>
+</body>
+</html>
