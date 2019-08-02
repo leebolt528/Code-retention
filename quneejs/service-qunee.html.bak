@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>LogIc-监测日志</title>
+</head>
+<body>
+<div id="page-container">
+    <div class="safe-bg">
+        <div class="safe-margin">
+            <div style="height: 500px;background: #fbfbfb" id="canvas"></div>
+        </div>
+    </div>
+</div>
+<script src='js/jquery/jquery.min.js'></script>
+<script src="js/qunee-min.js"></script>
+<script src="js/service-qunee.js"></script>
+<script>
+    var data = {
+        "nodes": [
+              {"name": "存量营销\n(同网)","id": "clyxactivity","image":"img/yun.png","type":"node"},
+              {"name": "营销活动\n接口服务","id": "activityInter","image":"img/yun.png","type":"node"},
+              {"name": "用户划配", "id": "epmwxwl","image":"img/yun.png","type":"node"},
+              {"name": "短信接口\n服务", "id": "smsinterface","image":"img/yun.png","type":"node"},
+            {"name": "短信渠道", "id": "smscenter", "image": "img/yun.png", "type": "node"},
+            {"name": "工单中心", "id": "ordercenter", "image": "img/yun.png", "type": "node", "status": "0"},
+        /*    {"name": "渠道协同", "id": "channelcoord", "image": "img/yun.png", "type": "node"},*/
+            {"name": "渠道中心", "id": "channelcenter", "image": "img/yun.png", "type": "node"},
+
+            {"name": "场景营销\n—省分", "id": "scenemarketing", "image": "img/yun.png", "type": "node"},
+            /*{"name": "工作台(3)", "id": "workplace", "image": "img/yun.png", "type": "node"},
+            {"name": "一级渠道\n数据下发", "id": "dataservice-epm", "image": "img/yun.png", "type": "node"},
+            {"name": "移动端应\n用", "id": "app", "image": "img/yun.png", "type": "node"},
+            {"name": "规则引擎", "id": "brms", "image": "img/yun.png", "type": "node"},
+            {"name": "存量营销\n(异网)","id": "clyxactivityyw","image":"img/yun.png","type":"node"},
+            {"name": "营销活动\n接口服务(异网)","id": "ywactivityinter","image":"img/yun.png","type":"node"},
+            {"name": "云门户与存量\n集成单点服务","id": "epmsso","image":"img/yun.png","type":"node"},
+            {"name": "订购中心", "id": "xorder","image":"img/yun.png","type":"node"},
+            {"name": "工单中心\n(异网)","id": "ordercenter-yw","image":"img/yun.png","type":"node"},
+            {"name": "工单任务", "id": "ordertask","image":"img/yun.png","type":"node"},
+            {"name": "工单任务\n(异网)","id": "ordertask-yw","image":"img/yun.png","type":"node"},
+            {"name": "单点登录",  "id": "cas","image":"img/yun.png","type":"node"},
+            {"name": "门户集成", "id": "portal", "image": "img/yun.png", "type": "node"},
+            {"name": "存量报表\n页面构建器", "id": "xbuildepage", "image": "img/yun.png", "type": "node"},
+            {"name": "存量报表\n中心", "id": "xbuilderoracle", "image": "img/yun.png", "type": "node"},
+            {"name": "存量微信", "id": "wechat", "image": "img/yun.png", "type": "node"},
+            {"name": "存量手机", "id": "stock", "image": "img/yun.png", "type": "node"},
+            {"name": "不详(3)", "id": "molen", "image": "img/yun.png", "type": "node"},
+            {"name": "微服务注册\n中心(3)", "id": "eurekaserver", "image": "img/yun.png", "type": "node"},
+            {"name": "微服务断路\n器监控(3)", "id": "turbine", "image": "img/yun.png", "type": "node"},
+            {"name": "流程引擎\n(未启动)", "id": "bpm", "image": "img/yun.png", "type": "node"},
+            {"name": "实时营销\nAPI", "id": "epm-realtime-api", "image": "img/yun.png", "type": "node"},
+            {"name": "场景营销\n--集团", "id": "epm-realtime-marketing", "image": "img/yun.png", "type": "node"},
+            {"name": "实时营销\nAPI", "id": "1epm-realtime-api", "image": "img/yun.png", "type": "node"},
+            {"name": "场景营销\n--集团", "id": "1epm-realtime-marketing", "image": "img/yun.png", "type": "node"},
+            {"name": "场景营销\n--集团", "id": "2epm-realtime-marketing", "image": "img/yun.png", "type": "node"},*/
+            {"name": "场景营销\n--集团", "id": "2epm", "image": "img/yun.png", "type": "node"}
+        ],
+        "edges": [
+            {"name": "1", "from": "smsinterface", "to": "2epm"},
+            {"name": "2", "from": "brms", "to": "2epm"},
+            {"name": "3", "from": "2epm-realtime-marketing", "to": "workplace"},
+            {"name": "4", "from": "1epm-realtime-api", "to": "workplace"},
+            {"name": "5", "from": "1epm-realtime-marketing", "to": "workplace"},
+            {"name": "6", "from": "epmwxwl", "to": "workplace"},
+            {"name": "7", "from": "workplace", "to": "epmwxwl"},
+            {"name": "8", "from": "app", "to": "security"},
+            {"name": "9", "from": "channelcenter", "to": "usertool"},
+            {"name": "10", "from": "clyxactivity", "to": "epmwxwl"},
+            {"name": "11", "from": "activityInter", "to": "usertool"},
+            {"name": "12", "from": "epmwxwl", "to": "ordercenter"},
+            {"name": "13", "from": "epmwxwl", "to": "channelapi"},
+            {"name": "14", "from": "epmwxwl", "to": "security"},
+            {"name": "1", "from": "smscenter", "to": "smsinterface"},
+            {"name": "2", "from": "smscenter", "to": "channelapi"},
+            {"name": "3", "from": "ordercenter", "to": "activityInter"},
+            {"name": "4", "from": "ordercenter", "to": "smsinterface"},
+            {"name": "5", "from": "ordercenter", "to": "usertool"},
+            {"name": "6", "from": "ordercenter", "to": "epmwxwl"},
+            {"name": "7", "from": "channelcoord", "to": "channelpageapi"},
+            {"name": "8", "from": "channelcenter", "to": "activityInter"},
+            {"name": "9", "from": "channelcenter", "to": "dataservice-epm"},
+            {"name": "10", "from": "channelcenter", "to": "workplace"},
+            {"name": "11", "from": "channelcenter", "to": "ordercenter"},
+            {"name": "12", "from": "scenemarketing", "to": "smsinterface"},
+            {"name": "13", "from": "usertool", "to": "security"},
+            {"name": "14", "from": "workplace", "to": "ordercenter"},
+            {"name": "1", "from": "workplace", "to": "security"},
+            {"name": "2", "from": "epm-realtime-marketing", "to": "channelapi"},
+            {"name": "3", "from": "app", "to": "ordercenter"},
+            {"name": "4", "from": "app", "to": "activityInter"},
+            {"name": "5", "from": "brms", "to": "ordercenter"},
+            {"name": "6", "from": "brms", "to": "channelcoord"}
+        ]
+    };
+   /* var data={
+         "edges":[
+         {"from":"1","name":"7","to":"2"},
+         {"from":"2","name":"1","to":"3"},
+         {"from":"3","name":"24","to":"4"},
+         {"from":"4","name":"2","to":""}
+         ],
+         "nodes":[
+         {"id":"1","image":"img/yun.png","name":"安全服务","type":"node"},
+         {"id":"2","image":"img/yun.png","name":"USER","type":"node"},
+         {"id":"3","image":"img/yun.png","name":"工作台、报表中心","type":"node"},
+         {"id":"4","image":"img/yun.png","name":"USER","type":"node"},
+         {"id":"5","image":"img/yun.png","name":"工作台、报表中心","type":"node"}
+         ]
+     }*/
+   /* var data={
+     "edges":[
+     {"from":"1","name":"7","to":"2"},
+     {"from":"2","name":"1","to":"1"},
+         {"from":"3","name":"1","to":"4"}
+     ],
+     "nodes":[
+     {"id":"1","image":"img/yun.png","name":"安全服务","type":"node"},
+     {"id":"2","image":"img/yun.png","name":"USER","type":"node"},
+         {"id":"3","image":"img/yun.png","name":"安全服务","type":"node"},
+         {"id":"4","image":"img/yun.png","name":"安全服务","type":"node"}
+     ]
+     }*/
+    $.qunee("canvas",data,{
+        levelEdge:10,//水平Edge间距
+        verticalEdge:5,//垂直Edge间距
+        zoom:false,//是否可缩放
+        borderColor:"#0099CC",//点击边框颜色
+        inColor:"#0099CC",//点击inEdge颜色
+        outColor:"#0099CC",//点击outEdge颜色
+        inColorError:"#CC0000",//点击已挂节点inEdge颜色
+        highlightColor:"#0099CC",//鼠标悬浮高亮颜色
+        highlightColorError:"#CC0000",//已挂节点鼠标悬浮高亮颜色
+        padding:4,//节点内边距
+        clickPadding:5,//点击节点内边距
+        movePadding:10,//悬浮节点内边距
+        nodeFontSize:10,//节点字体大小
+        textFontSize:15,//文本字体大小
+        ycount:7,//无关联节点每列放置的最大节点数
+        ycount1:7,//关联节点每列放置的最大节点数
+        layouter_repulsion:100,//斥力系数           数值越大，节点之间的间距越大，参考值0-100
+        layouter_attractive:0.2,// 中心吸引力系数    数值越大，整体分布越密集，参考值0-1
+        layouter_elastic:1//弹性系数                数值越大，连线收缩越短，参考值0-10
+    });
+</script>
+</body>
+</html>

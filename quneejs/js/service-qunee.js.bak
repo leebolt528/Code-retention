@@ -1,0 +1,944 @@
+/**
+ * Created by Administrator on 2017/4/21 0021.
+ */
+var height=$("#canvas").height();
+var width=$("#canvas").width();
+var map = new Map();//所有节点
+/*var mapFront=new Map();//已经布局的节点，无无关联节点
+var mapBehind=new Map();//未布局的节点
+var mapNull=new Map();//无关联节点
+var mapBehind1=new Map();
+var mapFront1=new Map();
+var mapGroupBehind=new Map();
+var arrRow=new Array();//每列垂直连线x
+var arrPoint=[];//每列节点间隔点y*/
+var gap=[];//每列节点间隔
+var group=[];//记录每列有关联节点
+/*var xGap=90;//无关联节点间隔*/
+var x=0;//节点横坐标
+var q=0;//xGap转换为xGap1的标识
+var j=0;//存在输入的节点列数
+var count=0;//总列数
+/*var xGap1=0;//关联节点间隔*/
+var k=0;//group数组下标
+var k1=0;//arrPoint数组下标
+var changeColor;//获取edge的颜色
+var changeWidth;//获取edge的宽度
+/*var line0=1;//同列相互依赖*/
+/*设置生成新的一列按布局排布*/
+/*var mapTem1=[];//一组数据的未排布节点，用于截取赋值
+var mapTem2=[];//新的一列数据
+var mapTem3=new Set();//一组数据的未排布节点，用于传入函数
+var qi=0;//和q共同作为xGap转换为xGap1的标识*/
+/*Json数据转换成qunee图元显示*/
+function translateToQuneeElements(json,graph,object){
+    if(json.nodes){
+        Q.forEach(json.nodes, function(data){
+            if(data.type==="node"){
+                createNode(data,graph,object);
+            }else if(data.type==="text"){
+                createText(data,graph,object);
+            }
+        });
+    }
+    if(json.edges){
+        Q.forEach(json.edges, function(data){
+            var to = map.get(data.to);
+            var from = map.get(data.from);
+            if(!from || !to){
+                return;
+            }
+            var edge = graph.createEdge(data.name,from,to);
+            edge.setStyle(Q.Styles.EDGE_CORNER,Q.Consts.EDGE_CORNER_miter);
+            edge.setStyle(Q.Styles.EDGE_CORNER_RADIUS,10);
+            edge.setStyle(Q.Styles.ARROW_TO, true);
+            edge.setStyle(Q.Styles.EDGE_WIDTH,0.5);
+            edge.setStyle(Q.Styles.LABEL_ROTATABLE, false);
+            edge.setStyle(Q.Styles.LABEL_ANCHOR_POSITION, Q.Position.CENTER_MIDDLE);
+            edge.setStyle(Q.Styles.LABEL_BACKGROUND_COLOR, "#FFFFFF");
+            edge.setStyle(Q.Styles.LABEL_COLOR, "#555555");
+            edge.set("data", data);
+        });
+    }
+}
+/* 创建节点方法*/
+function createNode(data,graph,object){
+    var node = graph.createNode(data.name);
+    node.image = data.image||Q.Graphs.server;
+    node.setStyle(Q.Styles.BORDER, 1);
+    node.setStyle(Q.Styles.BORDER_COLOR, '#CCCCCC');
+    node.setStyle(Q.Styles.PADDING, object.padding);
+    node.setStyle(Q.Styles.LABEL_FONT_SIZE,object.nodeFontSize);
+    if(data.status =="0"){
+        node.setStyle(Q.Styles.BORDER_COLOR, 'red');
+        node.setStyle(Q.Styles.BORDER,1);
+        node.setStyle("status0",0);//控制鼠标划入划出已挂边框和依赖线的显示样式
+    }else{
+        node.setStyle("status",0);//控制鼠标划入划出未挂边框和依赖线的显示样式
+    }
+    node.set("data", data);
+    map.set(data.id,node);
+    return node;
+}
+/*创建文本节点方法*/
+function createText(data,graph,object){
+    var text = graph.createText(data.name);
+    text.setStyle(Q.Styles.BACKGROUND_COLOR,data.background);
+    text.setStyle(Q.Styles.LABEL_FONT_SIZE,object.textFontSize);
+    text.setStyle(Q.Styles.BORDER, 1);
+    text.setStyle(Q.Styles.BORDER_COLOR, '#CCCCCC');
+    text.setStyle(Q.Styles.PADDING, object.padding);
+    text.setStyle(Q.Styles.BACKGROUND_COLOR,text.background);
+    text.set("data", data);
+    map.set(data.id,text);
+    return text;
+}
+/*鼠标移动高亮显示*/
+var currentElement;
+function unhighlight(element,object){
+    if(element instanceof Q.Edge){
+        element.setStyle(Q.Styles.ARROW_TO_STROKE_STYLE,changeColor);
+        element.setStyle(Q.Styles.EDGE_COLOR,changeColor);
+        element.setStyle(Q.Styles.LABEL_COLOR,changeColor);
+        element.setStyle(Q.Styles.EDGE_WIDTH,changeWidth);
+        if(element.to._n0w.data.status=="0"&&element.to.styles["status0"]==0&&element.from.styles['status']==0){
+            element.setStyle(Q.Styles.ARROW_TO_OFFSET,0);
+            element.setStyle(Q.Styles.ARROW_TO);
+            element.setStyle(Q.Styles.ARROW_TO_FILL_COLOR);
+            element.setStyle(Q.Styles.ARROW_TO_STROKE,0.5);
+        }
+        return;
+    };
+    if(element.styles['status']==0){
+        currentElement.setStyle(Q.Styles.BORDER, 1);
+        currentElement.setStyle(Q.Styles.BORDER_COLOR,"#CCCCCC");
+    }else if(element.styles["status0"]==0){
+        currentElement.setStyle(Q.Styles.BORDER,1);
+        currentElement.setStyle(Q.Styles.BORDER_COLOR,"#CC0000");
+        currentElement.forEachInEdge(function(edge){
+            edge.setStyle(Q.Styles.ARROW_TO_STROKE_STYLE,"#555555");
+            edge.setStyle(Q.Styles.EDGE_WIDTH,0.5);
+            edge.setStyle(Q.Styles.EDGE_COLOR);
+            edge.setStyle(Q.Styles.LABEL_COLOR);
+            edge.setStyle(Q.Styles.ALPHA,1);
+
+            edge.setStyle(Q.Styles.ARROW_TO_OFFSET,0);
+            edge.setStyle(Q.Styles.ARROW_TO);
+            edge.setStyle(Q.Styles.ARROW_TO_FILL_COLOR);
+            edge.setStyle(Q.Styles.LABEL_COLOR, "#555555");
+        });
+    }
+    element.setStyle(Q.Styles.PADDING,object.padding);
+}
+function highlight(element,object){
+    if(currentElement === element){
+        return;
+    }
+    if(currentElement){
+        unhighlight(currentElement,object);
+    }
+    currentElement = element;
+    if(!currentElement){
+        return;
+    }
+    if(currentElement instanceof Q.Edge){
+        changeColor=element.styles['edge.color'];
+        changeWidth=element.styles['edge.width'];
+        if(currentElement.to._n0w.data.status=="0"){
+            currentElement.setStyle(Q.Styles.EDGE_WIDTH);
+            currentElement.setStyle(Q.Styles.EDGE_COLOR, object.inColorError);
+            currentElement.setStyle(Q.Styles.LABEL_COLOR, object.inColorError);
+
+            currentElement.setStyle(Q.Styles.ARROW_TO, Q.Consts.SHAPE_CROSS);
+            currentElement.setStyle(Q.Styles.ARROW_TO_FILL_COLOR, "#1E90FF");
+            currentElement.setStyle(Q.Styles.ARROW_TO_OFFSET, {x: -20});
+            currentElement.setStyle(Q.Styles.ARROW_TO_STROKE, 1);
+            currentElement.setStyle(Q.Styles.ARROW_TO_STROKE_STYLE,"#CC0000");
+        }else{
+            currentElement.setStyle(Q.Styles.ARROW_TO_STROKE_STYLE,object.highlightColor);
+            currentElement.setStyle(Q.Styles.EDGE_COLOR, object.highlightColor);
+            currentElement.setStyle(Q.Styles.LABEL_COLOR, object.highlightColor);
+            currentElement.setStyle(Q.Styles.EDGE_WIDTH,1);
+        }
+        return;
+    }
+    if(element._n0w.data.status!=="0"){
+        currentElement.setStyle(Q.Styles.BORDER, 1);
+        currentElement.setStyle(Q.Styles.BORDER_COLOR, object.highlightColor);
+    }
+}
+/*自动布局*/
+/*function layout(graph,object){
+    var levelEdge=object.levelEdge;
+    var verticalEdge=object.verticalEdge;
+    graph.originAtCenter = false;
+    map.forEach(function (value,key) {
+        mapBehind.set(key,value);
+        mapBehind1.set(key,value);
+    })
+    /!*遍历第一组节点,放置无关联节点*!/
+    var i=0;
+    if(i===0){
+        i++;
+        var mapGroup=new Map();
+        map.forEach(function (value,key,mapTem) {
+            var edgeIn=0;
+            var edgeOut=0;
+            mapTem.get(key).forEachInEdge(function(){
+                edgeIn++;
+            });
+            mapTem.get(key).forEachOutEdge(function(){
+                edgeOut++;
+            });
+            if(edgeIn===0&&edgeOut!==0){
+                mapGroup.set(key,value);
+            }
+            if(edgeIn===0&&edgeOut===0){
+                mapNull.set(key,value);
+            }
+        })
+        if(mapNull.size!==0){
+            count+=Math.ceil(mapNull.size/object.ycount);
+            if(mapGroup.size==0&&mapNull.size<=30){
+                var norelation=0;//只有无关联节点
+            }
+            createLocation(mapNull,object,null,norelation);
+        }
+        mapChange(mapGroup);
+        deleteMapNull(mapNull);
+    }
+    if(mapGroup.size!==0){
+        count+=Math.ceil(mapGroup.size/object.ycount1);
+    }
+    var behindWidth=width-x;
+    /!*计算列数*!/
+    while(mapBehind1.size!==0){
+        columnCount(object);
+    }
+    /!*列数<=5时的布局*!/
+    if(count>5){
+        xGap1=behindWidth/j;
+         graph.zoomToOverview();
+    }else{
+        xGap1=behindWidth/(j+1);
+          /!* graph.zoomToOverview();*!/
+        /!*将整个画布移动到组件中心*!/
+        graph.callLater(function(){graph.moveToCenter(0.9);});
+    }
+    /!*放置无输入有输出的节点*!/
+    if(mapGroup.size!==0){
+        /!* judge1=true;*!/
+        var judge=true;
+        qi++;
+        object.ycount=object.ycount1;
+        createLocation(mapGroup,object,judge);
+    }
+    /!*循环遍历之后的每组节点*!/
+    while(mapBehind.size!==0){
+        ergodicNode(object);
+        mapGroupBehind.clear();
+    }
+    if(count<=5){
+        var both=0;
+        if(count==1){ //judge1===true
+            both=behindWidth/2;
+        }else if(j==0){
+            both=width/(count+1)/2;
+        }else{
+            both=(width-90*(count-j-1)-xGap1*(j))/2;
+        }
+        map.forEach(function(value){
+            value.x+=(both-90);
+        })
+    }
+    /!*edge布局*!/
+    graph.callLater(function () {
+        for (var i = 0; i < group.length; i++) {
+            var row = 2;
+            group[i].forEach(function (value) {
+                value.forEachOutEdge(function (edge) {
+                    var line = Math.round(Math.abs(value.x - edge.to.x) / xGap1 - 1);
+                    /!*同列相互依赖*!/
+                    if(line === -1){
+                        if(line0%2===0){
+                            var fromBounds = graph.getUIBounds(value);
+                            var toBounds = graph.getUIBounds(edge.to);
+                            edge.addPathSegment([fromBounds.right, fromBounds.cy]);
+                            edge.addPathSegment([fromBounds.right+ row, fromBounds.cy ]);
+                            edge.addPathSegment([toBounds.right+ row, toBounds.cy]);
+                            edge.addPathSegment([toBounds.right, toBounds.cy]);
+                            row+=verticalEdge;
+                        }else{
+                            var fromBounds = graph.getUIBounds(value);
+                            var toBounds = graph.getUIBounds(edge.to);
+                            edge.addPathSegment([fromBounds.left, fromBounds.cy]);
+                            edge.addPathSegment([fromBounds.left-arrRow[i], fromBounds.cy ]);
+                            edge.addPathSegment([toBounds.left-arrRow[i], toBounds.cy]);
+                            edge.addPathSegment([toBounds.left, toBounds.cy]);
+                            arrRow[i]+=verticalEdge;
+                        }
+                        line0++;
+                    }
+                    if (line === 1) {
+                        var fromBounds = graph.getUIBounds(value);
+                        var toBounds = graph.getUIBounds(edge.to);
+                        edge.addPathSegment([fromBounds.right, fromBounds.cy]);
+                        edge.addPathSegment([fromBounds.right + row, fromBounds.cy ]);
+                        var height=Math.round(((value.y+edge.to.y)/2)/gap[i+1]);
+                        var y1=arrPoint[i+1][height];      //间行中关系线的y坐标
+                        if(height===group[i+1].length){    //关系线出现在最下边
+                            y1-=15;
+                        }else if(height==0){               //关系线出现在最上边
+                            y1+=15;
+                        }
+                        edge.addPathSegment([fromBounds.right + row, y1]);
+                        edge.addPathSegment([toBounds.left-arrRow[i+2], y1]);
+                        edge.addPathSegment([toBounds.left-arrRow[i+2], toBounds.cy]);
+                        edge.addPathSegment([toBounds.left, toBounds.cy]);
+                        row+=verticalEdge;
+                        arrRow[i+2]+=verticalEdge;
+                        if(group[i+1].length>4){            //一列出现大于4个节点，穿过的间行关系y轴重叠
+                            arrPoint[i+1][height]+=0;
+                        }else if(group[i+1].length===height){
+                            arrPoint[i+1][height]-=levelEdge;
+                        }else{
+                            arrPoint[i+1][height]+=levelEdge;
+                        }
+                    }
+                    if (line === 2) {
+                        var fromBounds = graph.getUIBounds(value);
+                        var toBounds = graph.getUIBounds(edge.to);
+                        edge.addPathSegment([fromBounds.right, fromBounds.cy]);
+                        edge.addPathSegment([fromBounds.right + row, fromBounds.cy ]);
+                        var height1=Math.round(((value.y+edge.to.y)/2)/gap[i+1]);
+                        var height2=Math.round(((value.y+edge.to.y)/2)/gap[i+2]);
+                        var y1=arrPoint[i+1][height1];
+                        var y2=arrPoint[i+2][height2];
+                        if(height1===group[i+1].length){
+                            y1-=15;
+                        }else if(height1==0){
+                            y1+=15;
+                        }
+                        if(height2===group[i+2].length){
+                            y2-=15;
+                        }else if(height2==0){
+                            y2+=15;
+                        }
+                        edge.addPathSegment([fromBounds.right + row, y1]);
+                        edge.addPathSegment([graph.getUIBounds(group[i+2][0]).left-arrRow[i+2], y1]);
+                        edge.addPathSegment([graph.getUIBounds(group[i+2][0]).left-arrRow[i+2], y2]);
+                        edge.addPathSegment([toBounds.left-arrRow[i+3], y2]);
+                        edge.addPathSegment([toBounds.left-arrRow[i+3], toBounds.cy]);
+                        edge.addPathSegment([toBounds.left, toBounds.cy]);
+                        row+=verticalEdge;
+                        arrRow[i+2]+=verticalEdge;
+                        arrRow[i+3]+=verticalEdge;
+                        if(group[i+1].length>4){
+                            arrPoint[i+1][height1]+=0;
+                        }else if(group[i+1].length===height1){
+                            arrPoint[i+1][height1]-=levelEdge;
+                        }else{
+                            arrPoint[i+1][height1]+=levelEdge;
+                        }
+
+                        if(group[i+2].length>4){
+                            arrPoint[i+2][height2]+=0;
+                        }else if(group[i+2].length===height2){
+                            arrPoint[i+2][height2]-=levelEdge;
+                        }else{
+                            arrPoint[i+2][height2]+=levelEdge;
+                        }
+                    }
+                    if (line === 3) {
+                        var fromBounds = graph.getUIBounds(value);
+                        var toBounds = graph.getUIBounds(edge.to);
+                        edge.addPathSegment([fromBounds.right, fromBounds.cy]);
+                        edge.addPathSegment([fromBounds.right + row, fromBounds.cy ]);
+                        var height1=Math.round(((value.y+edge.to.y)/2)/gap[i+1]);
+                        var height2=Math.round(((value.y+edge.to.y)/2)/gap[i+2]);
+                        var height3=Math.round(((value.y+edge.to.y)/2)/gap[i+3]);
+                        var y1=arrPoint[i+1][height1];
+                        var y2=arrPoint[i+2][height2];
+                        var y3=arrPoint[i+3][height3];
+                        if(height1===group[i+1].length){
+                            y1-=15;
+                        }else if(height1==0){
+                            y1+=15;
+                        }
+                        if(height2===group[i+2].length){
+                            y2-=15;
+                        }else if(height2==0){
+                            y2+=15;
+                        }
+                        if(height3===group[i+3].length){
+                            y3-=15;
+                        }else if(height3==0){
+                            y3+=15;
+                        }
+                        edge.addPathSegment([fromBounds.right + row, y1]);
+                        edge.addPathSegment([graph.getUIBounds(group[i+2][0]).left-arrRow[i+2], y1]);
+                        edge.addPathSegment([graph.getUIBounds(group[i+2][0]).left-arrRow[i+2], y2]);
+                        edge.addPathSegment([graph.getUIBounds(group[i+3][0]).left-arrRow[i+3], y2]);
+                        edge.addPathSegment([graph.getUIBounds(group[i+3][0]).left-arrRow[i+3], y3]);
+                        edge.addPathSegment([toBounds.left-arrRow[i+4], y3]);
+                        edge.addPathSegment([toBounds.left-arrRow[i+4], toBounds.cy]);
+                        edge.addPathSegment([toBounds.left, toBounds.cy]);
+                        row+=verticalEdge;
+                        arrRow[i+2]+=verticalEdge;
+                        arrRow[i+3]+=verticalEdge;
+                        arrRow[i+4]+=verticalEdge;
+                        if(group[i+1].length>4){
+                            arrPoint[i+1][height1]+=0;
+                        }else if(group[i+1].length===height1){
+                            arrPoint[i+1][height1]-=levelEdge;
+                        }else{
+                            arrPoint[i+1][height1]+=levelEdge;
+                        }
+
+                        if(group[i+2].length>4){
+                            arrPoint[i+2][height2]+=0;
+                        }else if(group[i+2].length===height2){
+                            arrPoint[i+2][height2]-=levelEdge;
+                        }else{
+                            arrPoint[i+2][height2]+=levelEdge;
+                        }
+
+                        if(group[i+3].length>4){
+                            arrPoint[i+3][height3]+=0;
+                        }else if(group[i+3].length===height3){
+                            arrPoint[i+3][height3]-=levelEdge;
+                        }else{
+                            arrPoint[i+3][height3]+=levelEdge;
+                        }
+                    }
+                    if (line === 4) {
+                        var fromBounds = graph.getUIBounds(value);
+                        var toBounds = graph.getUIBounds(edge.to);
+                        edge.addPathSegment([fromBounds.right, fromBounds.cy]);
+                        edge.addPathSegment([fromBounds.right + row, fromBounds.cy ]);
+                        var height1=Math.round(((value.y+edge.to.y)/2)/gap[i+1]);
+                        var height2=Math.round(((value.y+edge.to.y)/2)/gap[i+2]);
+                        var height3=Math.round(((value.y+edge.to.y)/2)/gap[i+3]);
+                        var height4=Math.round(((value.y+edge.to.y)/2)/gap[i+4]);
+                        var y1=arrPoint[i+1][height1];
+                        var y2=arrPoint[i+2][height2];
+                        var y3=arrPoint[i+3][height3];
+                        var y4=arrPoint[i+4][height4];
+                        if(height1===group[i+1].length){
+                            y1-=15;
+                        }else if(height1==0){
+                            y1+=15;
+                        }
+                        if(height2===group[i+2].length){
+                            y2-=15;
+                        }else if(height2==0){
+                            y2+=15;
+                        }
+                        if(height3===group[i+3].length){
+                            y3-=15;
+                        }else if(height3==0){
+                            y3+=15;
+                        }
+                        if(height4===group[i+4].length){
+                            y4-=15;
+                        }else if(height4==0){
+                            y4+=15;
+                        }
+                        edge.addPathSegment([fromBounds.right + row, y1]);
+                        edge.addPathSegment([graph.getUIBounds(group[i+2][0]).left-arrRow[i+2], y1]);
+                        edge.addPathSegment([graph.getUIBounds(group[i+2][0]).left-arrRow[i+2], y2]);
+                        edge.addPathSegment([graph.getUIBounds(group[i+3][0]).left-arrRow[i+3], y2]);
+                        edge.addPathSegment([graph.getUIBounds(group[i+3][0]).left-arrRow[i+3], y3]);
+                        edge.addPathSegment([graph.getUIBounds(group[i+4][0]).left-arrRow[i+4], y3]);
+                        edge.addPathSegment([graph.getUIBounds(group[i+4][0]).left-arrRow[i+4], y4]);
+                        edge.addPathSegment([toBounds.left-arrRow[i+5], y4]);
+                        edge.addPathSegment([toBounds.left-arrRow[i+5], toBounds.cy]);
+                        edge.addPathSegment([toBounds.left, toBounds.cy]);
+                        row+=verticalEdge;
+                        arrRow[i+2]+=verticalEdge;
+                        arrRow[i+3]+=verticalEdge;
+                        arrRow[i+4]+=verticalEdge;
+                        arrRow[i+5]+=verticalEdge;
+                        if(group[i+1].length>4){
+                            arrPoint[i+1][height1]+=0;
+                        }else if(group[i+1].length===height1){
+                            arrPoint[i+1][height1]-=levelEdge;
+                        }else{
+                            arrPoint[i+1][height1]+=levelEdge;
+                        }
+
+                        if(group[i+2].length>4){
+                            arrPoint[i+2][height2]+=0;
+                        }else if(group[i+2].length===height2){
+                            arrPoint[i+2][height2]-=levelEdge;
+                        }else{
+                            arrPoint[i+2][height2]+=levelEdge;
+                        }
+
+                        if(group[i+3].length>4){
+                            arrPoint[i+3][height3]+=0;
+                        }else if(group[i+3].length===height3){
+                            arrPoint[i+3][height3]-=levelEdge;
+                        }else{
+                            arrPoint[i+3][height3]+=levelEdge;
+                        }
+
+                        if(group[i+4].length>4){
+                            arrPoint[i+4][height4]+=0;
+                        }else if(group[i+4].length===height4){
+                            arrPoint[i+4][height4]-=levelEdge;
+                        }else{
+                            arrPoint[i+4][height4]+=levelEdge;
+                        }
+                    }
+                    if (line === 5) {
+                        var fromBounds = graph.getUIBounds(value);
+                        var toBounds = graph.getUIBounds(edge.to);
+                        edge.addPathSegment([fromBounds.right, fromBounds.cy]);
+                        edge.addPathSegment([fromBounds.right + row, fromBounds.cy ]);
+                        var height1=Math.round(((value.y+edge.to.y)/2)/gap[i+1]);
+                        var height2=Math.round(((value.y+edge.to.y)/2)/gap[i+2]);
+                        var height3=Math.round(((value.y+edge.to.y)/2)/gap[i+3]);
+                        var height4=Math.round(((value.y+edge.to.y)/2)/gap[i+4]);
+                        var height5=Math.round(((value.y+edge.to.y)/2)/gap[i+5]);
+                        var y1=arrPoint[i+1][height1];
+                        var y2=arrPoint[i+2][height2];
+                        var y3=arrPoint[i+3][height3];
+                        var y4=arrPoint[i+4][height4];
+                        var y5=arrPoint[i+5][height5];
+                        if(height1===group[i+1].length){
+                            y1-=15;
+                        }else if(height1==0){
+                            y1+=15;
+                        }
+                        if(height2===group[i+2].length){
+                            y2-=15;
+                        }else if(height2==0){
+                            y2+=15;
+                        }
+                        if(height3===group[i+3].length){
+                            y3-=15;
+                        }else if(height3==0){
+                            y3+=15;
+                        }
+                        if(height4===group[i+4].length){
+                            y4-=15;
+                        }else if(height4==0){
+                            y4+=15;
+                        }
+                        if(height5===group[i+5].length){
+                            y5-=15;
+                        }else if(height5==0){
+                            y5+=15;
+                        }
+                        edge.addPathSegment([fromBounds.right + row, y1]);
+                        edge.addPathSegment([graph.getUIBounds(group[i+2][0]).left-arrRow[i+2], y1]);
+                        edge.addPathSegment([graph.getUIBounds(group[i+2][0]).left-arrRow[i+2], y2]);
+                        edge.addPathSegment([graph.getUIBounds(group[i+3][0]).left-arrRow[i+3], y2]);
+                        edge.addPathSegment([graph.getUIBounds(group[i+3][0]).left-arrRow[i+3], y3]);
+                        edge.addPathSegment([graph.getUIBounds(group[i+4][0]).left-arrRow[i+4], y3]);
+                        edge.addPathSegment([graph.getUIBounds(group[i+4][0]).left-arrRow[i+4], y4]);
+                        edge.addPathSegment([graph.getUIBounds(group[i+5][0]).left-arrRow[i+5], y4]);
+                        edge.addPathSegment([graph.getUIBounds(group[i+5][0]).left-arrRow[i+5], y5]);
+                        edge.addPathSegment([toBounds.left-arrRow[i+6], y5]);
+                        edge.addPathSegment([toBounds.left-arrRow[i+6], toBounds.cy]);
+                        edge.addPathSegment([toBounds.left, toBounds.cy]);
+                        row+=verticalEdge;
+                        arrRow[i+2]+=verticalEdge;
+                        arrRow[i+3]+=verticalEdge;
+                        arrRow[i+4]+=verticalEdge;
+                        arrRow[i+5]+=verticalEdge;
+                        arrRow[i+6]+=verticalEdge;
+                        if(group[i+1].length>4){
+                            arrPoint[i+1][height1]+=0;
+                        }else if(group[i+1].length===height1){
+                            arrPoint[i+1][height1]-=levelEdge;
+                        }else{
+                            arrPoint[i+1][height1]+=levelEdge;
+                        }
+
+                        if(group[i+2].length>4){
+                            arrPoint[i+2][height2]+=0;
+                        }else if(group[i+2].length===height2){
+                            arrPoint[i+2][height2]-=levelEdge;
+                        }else{
+                            arrPoint[i+2][height2]+=levelEdge;
+                        }
+
+                        if(group[i+3].length>4){
+                            arrPoint[i+3][height3]+=0;
+                        }else if(group[i+3].length===height3){
+                            arrPoint[i+3][height3]-=levelEdge;
+                        }else{
+                            arrPoint[i+3][height3]+=levelEdge;
+                        }
+
+                        if(group[i+4].length>4){
+                            arrPoint[i+4][height4]+=0;
+                        }else if(group[i+4].length===height4){
+                            arrPoint[i+4][height4]-=levelEdge;
+                        }else{
+                            arrPoint[i+4][height4]+=levelEdge;
+                        }
+
+                        if(group[i+5].length>4){
+                            arrPoint[i+5][height5]+=0;
+                        }else if(group[i+5].length===height5){
+                            arrPoint[i+5][height5]-=levelEdge;
+                        }else{
+                            arrPoint[i+5][height5]+=levelEdge;
+                        }
+                    }
+                });
+            })
+        }
+
+    })
+}
+function columnCount(object){
+    var mapGroup=new Map();
+    mapBehind1.forEach(function (value,key) {
+        var mapOut=new Map();
+        value.forEachOutEdge(function (edge) {
+            mapOut.set(edge._n0w.data.to,edge.to);
+        })
+
+        var mapFront1_ago=new Map();
+        mapFront1.forEach(function (value,key) {
+            mapFront1_ago.set(key,value);
+        })
+
+        mapOut.forEach(function (value,key) {
+            mapFront1.set(key,value);
+        })
+
+        var i=0;
+        value.forEachInEdge(function(edge){
+            if(!mapFront1.has(edge._n0w.data.from)){
+                i++;
+            }
+        });
+        mapFront1.clear();
+        mapFront1_ago.forEach(function (value,key) {
+            mapFront1.set(key,value);
+        })
+        if(i===0){
+            mapGroup.set(key,value);
+        }
+    })
+    count=Math.ceil(mapGroup.size/object.ycount1)+count;
+    j=Math.ceil(mapGroup.size/object.ycount1)+j;
+    mapChange1(mapGroup);
+}
+function mapChange1(mapGroup){
+    mapGroup.forEach(function (value,key) {
+        mapFront1.set(key,value);
+        mapBehind1.delete(key);
+    })
+}
+function deleteMapNull(mapNull){
+    mapNull.forEach(function(value,key){
+        mapBehind.delete(key);
+        mapBehind1.delete(key);
+    })
+}
+function createLocation(mapTem,object,judge,norelation){
+    if(q>0){
+        xGap=xGap1;
+    }
+    if(qi>0){
+        q++;
+    }
+    if(norelation==0){
+        object.ycount=5;
+    }
+    x+=xGap;
+    if(norelation==0){
+        xGap=width/(count+1);
+    }
+    var length=mapTem.size;
+    /!*设置生成新的一列按布局排布*!/
+    mapTem.forEach(function(value,key) {
+        mapTem1.push(value);
+    });
+    if(mapTem.size>object.ycount){
+        length=object.ycount;
+        mapTem2=mapTem1.slice(0,object.ycount);
+    }else{
+        mapTem2=mapTem1.slice(0,mapTem1.length);
+        mapTem1.length=0;
+    }
+    var y=(height/length)/2;
+    if(judge&&judge===true){
+        gap.push(y*2);
+        arrPoint[k1]=new Array();
+        var j=15;
+        if(length===1){
+            arrPoint[k1].push(height/4);
+            arrPoint[k1].push(height-height/4);
+        }else {
+            for (var i = 0; i <= length; i++) {
+                arrPoint[k1].push(j);
+                j += y * 2;
+                if(i!==0&&i!==length){
+                    arrPoint[k1][arrPoint[k1].length-1]-=(1/2)*y;
+                }
+            }
+        }
+        k1++;
+    }
+    var i=0;
+    if(judge&&judge===true){
+        group[k]=new Array();
+        arrRow.push(5);
+    }
+    mapTem2.forEach(function(value,key){
+        if(judge&&judge===true){
+            group[k].push(value);
+        }
+        value.x=x;
+        value.y=y;
+        y+=height/length;
+        i++;
+    });
+    if(judge&&judge===true){
+        k++;
+    }
+    /!*设置生成新的一列按布局排布*!/
+    if(mapTem1.length>object.ycount){
+        mapTem2.length=0;
+        mapTem1.splice(0,object.ycount);
+        mapTem3.clear();
+        mapTem1.forEach(function(value){
+            mapTem3.add(value);
+
+        });
+        mapTem1.length=0;
+        createLocation(mapTem3,object,judge);
+    }
+}
+function mapChange(mapGroup){
+    mapGroup.forEach(function (value,key) {
+        mapFront.set(key,value);
+        mapBehind.delete(key);
+        mapBehind1.delete(key);
+        mapFront1.set(key,value);
+    })
+}
+function ergodicNode(object){
+    mapBehind.forEach(function (value,key) {
+        var mapOut=new Map();
+        value.forEachOutEdge(function (edge) {
+            mapOut.set(edge._n0w.data.to,edge.to);
+        })
+        var mapFront_ago=new Map();
+        mapFront.forEach(function (value,key) {
+            mapFront_ago.set(key,value);
+        })
+        mapOut.forEach(function (value,key) {
+            mapFront.set(key,value);
+        })
+        var i=0;
+        value.forEachInEdge(function(edge){
+            if(!mapFront.has(edge._n0w.data.from)){
+                i++;
+            }
+        });
+        mapFront.clear();
+        mapFront_ago.forEach(function (value,key) {
+            mapFront.set(key,value);
+        })
+        if(i===0){
+            mapGroupBehind.set(key,value);
+        }
+    })
+    /!*标记有关联节点的列*!/
+    var judge=true;
+    createLocation(mapGroupBehind,object,judge);
+    mapChange(mapGroupBehind);
+}*/
+/*单击事件*/
+function clickEvent(graph,evt,object){
+    var model = graph.graphModel;
+    model.forEachByTopoDepthFirstSearch(function(node){
+        node.setStyle(Q.Styles.BORDER, 1);
+        if(node._n0w.data.status =="0"){
+            node.setStyle(Q.Styles.BORDER_COLOR, 'red');
+            node.setStyle(Q.Styles.BORDER,1);
+            node.setStyle("status0",0);
+        }else{
+            node.setStyle(Q.Styles.BORDER_COLOR, '#CCCCCC');
+            node.setStyle("status",0);
+        }
+        node.setStyle(Q.Styles.PADDING, object.padding);
+        node.setStyle(Q.Styles.ALPHA);
+        node.forEachEdge(function(edge){
+            edge.setStyle(Q.Styles.ARROW_TO_STROKE_STYLE,"#555555");
+            edge.setStyle(Q.Styles.EDGE_WIDTH,0.5);
+            edge.setStyle(Q.Styles.EDGE_COLOR);
+            edge.setStyle(Q.Styles.LABEL_COLOR);
+            edge.setStyle(Q.Styles.ALPHA,1);
+
+            edge.setStyle(Q.Styles.ARROW_TO_OFFSET,0);
+            edge.setStyle(Q.Styles.ARROW_TO);
+            edge.setStyle(Q.Styles.ARROW_TO_FILL_COLOR);
+            edge.setStyle(Q.Styles.LABEL_COLOR, "#555555");
+        });
+    });
+    var node = graph.getElementByMouseEvent(evt);
+    //与所点节点无关的依赖线和节点淡化
+    map.forEach(function(value){
+        if(value===node){
+            map.forEach(function (value,key) {
+                value.forEachEdge(function(edge){
+                    edge.setStyle(Q.Styles.ALPHA,0.5);
+                });
+                value.setStyle(Q.Styles.ALPHA,0.5);
+            })
+        }
+    });
+    node.setStyle(Q.Styles.ALPHA,1);
+    node.forEachEdge(function(edge){
+        edge.setStyle(Q.Styles.ALPHA);
+        edge.to.setStyle(Q.Styles.ALPHA);
+        edge.from.setStyle(Q.Styles.ALPHA);
+    });
+    if(node._n0w.data.status =="0"){
+        node.setStyle(Q.Styles.BORDER, 1);
+        node.setStyle(Q.Styles.BORDER_COLOR, object.inColorError);
+        node.setStyle(Q.Styles.PADDING, object.clickPadding);
+        node.setStyle("status0",1);
+
+        node.forEachOutEdge(function(edge){
+            edge.setStyle(Q.Styles.EDGE_WIDTH, 1);
+            edge.setStyle(Q.Styles.EDGE_COLOR, object.outColor);
+            edge.setStyle(Q.Styles.LABEL_COLOR, object.outColor);
+            edge.setStyle(Q.Styles.ARROW_TO_STROKE_STYLE,object.outColor);
+        });
+        node.forEachInEdge(function(edge){
+            edge.setStyle(Q.Styles.EDGE_WIDTH);
+            edge.setStyle(Q.Styles.EDGE_COLOR, object.inColorError);
+            edge.setStyle(Q.Styles.LABEL_COLOR, object.inColorError);
+            edge.setStyle(Q.Styles.ARROW_TO, Q.Consts.SHAPE_CROSS);
+            edge.setStyle(Q.Styles.ARROW_TO_FILL_COLOR, "#1E90FF");
+            edge.setStyle(Q.Styles.ARROW_TO_OFFSET, {x: -20});
+            edge.setStyle(Q.Styles.ARROW_TO_STROKE, 1);
+            edge.setStyle(Q.Styles.ARROW_TO_STROKE_STYLE,"#CC0000");
+        });
+    }else{
+        node.setStyle(Q.Styles.BORDER, 1);
+        node.setStyle(Q.Styles.BORDER_COLOR, object.borderColor);
+        node.setStyle(Q.Styles.PADDING, object.clickPadding);
+        node.setStyle("status",1);
+        node.forEachOutEdge(function(edge){
+            if(edge.to._n0w.data.status =="0"){
+                edge.setStyle(Q.Styles.EDGE_WIDTH);
+                edge.setStyle(Q.Styles.EDGE_COLOR, object.inColorError);
+                edge.setStyle(Q.Styles.LABEL_COLOR, object.inColorError);
+                edge.setStyle(Q.Styles.ARROW_TO, Q.Consts.SHAPE_CROSS);
+                edge.setStyle(Q.Styles.ARROW_TO_FILL_COLOR, "#1E90FF");
+                edge.setStyle(Q.Styles.ARROW_TO_OFFSET, {x: -20});
+                edge.setStyle(Q.Styles.ARROW_TO_STROKE, 1);
+                edge.setStyle(Q.Styles.ARROW_TO_STROKE_STYLE,"#CC0000");
+            }else{
+                edge.setStyle(Q.Styles.EDGE_WIDTH, 1);
+                edge.setStyle(Q.Styles.EDGE_COLOR, object.outColor);
+                edge.setStyle(Q.Styles.LABEL_COLOR, object.outColor);
+                edge.setStyle(Q.Styles.ARROW_TO_STROKE_STYLE,object.outColor);
+            }
+        });
+        node.forEachInEdge(function(edge){
+            edge.setStyle(Q.Styles.EDGE_WIDTH, 1);
+            edge.setStyle(Q.Styles.EDGE_COLOR, object.inColor);
+            edge.setStyle(Q.Styles.LABEL_COLOR, object.inColor);
+            edge.setStyle(Q.Styles.ARROW_TO_STROKE_STYLE,object.outColor);
+        });
+    };
+}
+var object2={
+    levelEdge:10,//水平Edge间距
+    verticalEdge:10,//垂直Edge间距
+    zoom:false,//是否可缩放
+    borderColor:"#6633CC",//点击边框颜色
+    inColor:"green",//点击inEdge颜色
+    outColor:"#6633CC",//点击outEdge颜色
+    inColorError:"#CC0000",//点击已挂节点inEdge颜色
+    highlightColor:"#FFFF33",//鼠标悬浮高亮颜色
+    highlightColorError:"#CC0000",//已挂节点鼠标悬浮高亮颜色
+    padding:5,//节点内边距
+    clickPadding:5,//点击节点内边距
+    movePadding:10,//悬浮节点内边距
+    nodeFontSize:10,//节点字体大小
+    textFontSize:15,//文本字体大小
+    ycount:7,//无关联节点每列放置的最大节点数
+    ycount1:7//关联节点每列放置的最大节点数
+};
+$.extend({
+    qunee:function(id, json,object1) {
+        var object=$.extend({},object2,object1);
+        var graph = new Q.Graph(id);
+        console.log(object);
+        graph.enableWheelZoom=object.zoom;
+        translateToQuneeElements(json,graph,object);
+        /*单击事件*/
+        graph.onclick= function (evt) {
+            clickEvent(graph,evt,object);
+        };
+        graph.onstart=function(evt){
+            var node = graph.getElementByMouseEvent(evt);
+            node.setStyle(Q.Styles.SELECTION_SHADOW_BLUR, 0);
+        }
+        /*消除水印*/
+        $(".Q-Graph canvas:last").hide();
+        /*鼠标移动高亮显示执行*/
+        graph.addCustomInteraction({
+            onmousemove: function(evt, graph){
+                var ui = graph.getUIByMouseEvent(evt);
+                if(ui&&ui.data._n0w.data.status =="0"){
+                    ui.data.setStyle(Q.Styles.BORDER_COLOR, object.highlightColorError);
+                    ui.data.setStyle(Q.Styles.BORDER,1);
+                    ui.data.forEachInEdge(function (edge) {
+                        edge.setStyle(Q.Styles.EDGE_WIDTH);
+                        edge.setStyle(Q.Styles.EDGE_COLOR, object.inColorError);
+                        edge.setStyle(Q.Styles.LABEL_COLOR, object.inColorError);
+                        edge.setStyle(Q.Styles.ARROW_TO, Q.Consts.SHAPE_CROSS);
+                        edge.setStyle(Q.Styles.ARROW_TO_FILL_COLOR, "#1E90FF");
+                        edge.setStyle(Q.Styles.ARROW_TO_OFFSET, {x: -20});
+                        edge.setStyle(Q.Styles.ARROW_TO_STROKE, 1);
+                        edge.setStyle(Q.Styles.ARROW_TO_STROKE_STYLE,"#CC0000");
+                        }
+                    );
+                }
+                if(!ui){
+                    graph.cursor = null;
+                    highlight(null,object);
+                    return;
+                }
+                graph.cursor = "pointer";
+                highlight(ui.data,object,graph);
+            }
+        });
+        /*导航按钮模式*/
+        graph.navigationType = Q.Consts.NAVIGATION_BUTTON;
+        /*自动布局*/
+       /* layout(graph,object);*/
+
+        var layouter = new Q.SpringLayouter(graph);
+        layouter.repulsion = object.layouter_repulsion;//斥力系数           数值越大，节点之间的间距越大，参考值0-100
+        layouter.attractive = object.layouter_attractive;// 中心吸引力系数   数值越大，整体分布越密集，参考值0-1
+        layouter.elastic = object.layouter_elastic;//弹性系数               数值越大，连线收缩越短，参考值0-10
+        layouter.start();
+       /* graph.moveToCenter(0.5,true);*/
+     /*   graph.zoomToOverview(true,0.7);*/
+    }
+});
+
+
+
+
+
+
+
+
+
+

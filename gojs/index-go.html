@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1, shrink-to-fit=no"
+    />
+    <meta name="theme-color" content="#000000" />
+    <title>拓扑图</title>
+    <script src="./jquery.js"></script>
+    <script src="./go.js"></script>
+    <script src="./doublechart.js"></script>
+    <link type="text/css" rel="stylesheet" href="./common.css"/>
+  </head>
+  <body>
+    <div id="canvas"></div>
+    <div id="contextMenu">
+        <ul>
+            <li id="details" onclick="cxcommand(event)"><a href="#" target="_self">节点信息</a></li>
+            <li id="relations" onclick="cxcommand(event)"><a href="#" target="_self">关联图表</a></li>
+        </ul>
+    </div>
+    
+    <script>
+      
+        var nodes = [
+      {
+          key: "172.16.3.30:8788^UNKNOWN",
+          name: "172.16.3.30:8788",
+          applicationName: "172.16.3.30:8788",
+          color: "#c23531",
+          category: "UNKNOWN",
+          serviceType: "UNKNOWN",
+          serviceTypeCode: "1",
+          image: "https://172.16.3.117:443/img/monitor/UNKNOWN.png",
+          isWas: false,
+          totalCount: 11,
+          errorCount: 6,
+          slowCount: 0,
+          instanceCount: 0
+      },
+      {
+          key: "epm_paas^MYSQL",
+          name: "epm_paas",
+          applicationName: "epm_paas",
+          color: "#2f4554",
+          category: "MYSQL",
+          serviceType: "MYSQL",
+          serviceTypeCode: "2101",
+          image: "https://172.16.3.117:443/img/monitor/MYSQL.png",
+          isWas: false,
+          totalCount: 1390,
+          errorCount: 0,
+          slowCount: 0,
+          instanceCount: 1
+      },
+      {
+          key: "172.16.3.30:23333^UNKNOWN",
+          name: "172.16.3.30:23333",
+          applicationName: "172.16.3.30:23333",
+          color: "#61a0a8",
+          category: "UNKNOWN",
+          serviceType: "UNKNOWN",
+          serviceTypeCode: "1",
+          image: "https://172.16.3.117:443/img/monitor/UNKNOWN.png",
+          isWas: false,
+          totalCount: 393,
+          errorCount: 91,
+          slowCount: 0,
+          hasAlert: false,
+          instanceCount: 0
+      },
+      {
+          key: "dev_bcm^TOMCAT",
+          name: "dev_bcm",
+          applicationName: "dev_bcm",
+          color: "#d48265",
+          category: "TOMCAT",
+          serviceType: "TOMCAT",
+          serviceTypeCode: "1010",
+          image: "https://172.16.3.117:443/img/monitor/TOMCAT.png",
+          isWas: true,
+          totalCount: 1747,
+          errorCount: 51,
+          slowCount: 0,
+          instanceCount: 1
+      },
+      {
+          key: "dev_bcm^USER",
+          name: "USER",
+          applicationName: "USER",
+          color: "#91c7ae",
+          category: "USER",
+          serviceType: "USER",
+          serviceTypeCode: "2",
+          image: "https://172.16.3.117:443/img/monitor/USER.png",
+          isWas: false,
+          totalCount: 1747,
+          errorCount: 51,
+          slowCount: 0,
+          instanceCount: 0
+      }
+  ];
+        var edges= [
+      {
+          key: "dev_bcm^TOMCAT~epm_paas^MYSQL",
+          from: "dev_bcm^TOMCAT",
+          to: "epm_paas^MYSQL",
+          fromImage: "https://172.16.3.117:443/img/monitor/TOMCAT.png",
+          toImage: "https://172.16.3.117:443/img/monitor/MYSQL.png",
+          source: "dev_bcm^TOMCAT",
+          target: "epm_paas^MYSQL",
+          totalCount: 1390,
+          errorCount: 0
+      },
+      {
+          key: "dev_bcm^TOMCAT~172.16.3.30:23333^UNKNOWN",
+          from: "dev_bcm^TOMCAT",
+          to: "172.16.3.30:23333^UNKNOWN",
+          fromImage: "https://172.16.3.117:443/img/monitor/TOMCAT.png",
+          toImage: "https://172.16.3.117:443/img/monitor/UNKNOWN.png",
+          source: "dev_bcm^TOMCAT",
+          target: "172.16.3.30:23333^UNKNOWN",
+          totalCount: 393,
+          errorCount: 91
+      },
+      {
+          key: "dev_bcm^USER~dev_bcm^TOMCAT",
+          from: "dev_bcm^USER",
+          to: "dev_bcm^TOMCAT",
+          fromImage: "https://172.16.3.117:443/img/monitor/USER.png",
+          toImage: "https://172.16.3.117:443/img/monitor/TOMCAT.png",
+          source: "dev_bcm^USER",
+          target: "dev_bcm^TOMCAT",
+          totalCount: 1747,
+          errorCount: 51
+      },
+      {
+          key: "dev_bcm^TOMCAT~172.16.3.30:8788^UNKNOWN",
+          from: "dev_bcm^TOMCAT",
+          to: "172.16.3.30:8788^UNKNOWN",
+          fromImage: "https://172.16.3.117:443/img/monitor/TOMCAT.png",
+          toImage: "https://172.16.3.117:443/img/monitor/UNKNOWN.png",
+          source: "dev_bcm^TOMCAT",
+          target: "172.16.3.30:8788^UNKNOWN",
+          totalCount: 11,
+          errorCount: 6
+      }
+  ];
+  
+        var diagramSty = {
+            strokeNo: "#0098f4", //默认色
+            strokeYes:"#2f4554", //选中色
+            strokeWidth: 2
+        };
+        
+        var $objGo = go.GraphObject.make;
+        $(function(){
+    
+            var diagram =
+                $objGo(go.Diagram, "canvas", //必须命名或引用DIV HTML元素
+                {
+                    //有鼠标滚轮事件放大和缩小，而不是向上和向下滚动
+                    "toolManager.mouseWheelBehavior": go.ToolManager.WheelZoom,
+                    allowCopy: false,
+                    allowDelete: false,
+                    "undoManager.isEnabled": false,
+                    initialContentAlignment: go.Spot.Center
+                    //allowHorizontalScroll: false,
+                    //allowVerticalScroll: false
+                });
+            init(diagram,nodes,edges,diagramSty);
+            function cxcommand(event, val) {
+                if (val === undefined) val = event.currentTarget.id;
+                var myDiagram = diagram;
+                switch (val) {
+                case "details": console.log('执行详情'); break;
+                case "relations": console.log('执行关联关系'); break;
+                }
+                myDiagram.currentTool.stopTool();
+            }
+        });
+
+    </script>
+  </body>
+</html>

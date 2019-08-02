@@ -1,0 +1,46 @@
+<!doctype html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>LogIc-监测日志</title>
+</head>
+<body>
+<div id="page-container">
+    <div class="safe-bg">
+        <div class="safe-margin">
+            <div style="height: 500px;background: #ffffff" id="canvas"></div>
+            <button><a>开始下载</a></button>
+        </div>
+    </div>
+</div>
+
+<script src='js/jquery.min.js'></script>
+<script src="js/qunee-min.js"></script>
+<script src="js/marketing.js"></script>
+<script>
+    $(function(){
+        $(".safe-margin canvas:first").attr("id","myCanvas");
+        var canvas = document.getElementById('myCanvas');
+        $(".safe-margin button").click(function(){
+            var image = canvas.toDataURL("image/png").replace("image/png", "image/octet-stream");
+            window.location.href=image;
+        })
+        /*/!*只在Google下使用*!/
+        $(".safe-margin canvas:first").attr("id","myCanvas");
+        var canvas = document.getElementById('myCanvas');
+        $(".safe-margin button a").attr("download","服务依赖关系总图");
+
+        var image = new Image();
+        image.src= canvas.toDataURL("image/png");
+
+        $(".safe-margin button").click(function(){
+            var image = new Image();
+            image.src= canvas.toDataURL("image/png");
+            $(".safe-margin button a").attr("href",image.src);
+        })*/
+    })
+</script>
+</body>
+</html>

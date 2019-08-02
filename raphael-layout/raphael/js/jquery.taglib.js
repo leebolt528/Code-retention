@@ -536,7 +536,7 @@
             var pathArrow = _setting.linesData[joinId].data("path");
             var re = /L[\d\.\,]+M[\d\.\,]+L[\d\.\,]+L[\d\.\,]+$/;
             var path = pathArrow.replace(re,"").replace(/(?<!^)[M]/g,'L');
-            if(nodeUpState == "20" && !flowBoolean){
+            if((nodeUpState == "20"||nodeUpState == "2") && !flowBoolean){
 
                 var flowLine = _setting.canvas.path(path).attr({
                     'stroke-width': 4,

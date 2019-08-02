@@ -203,13 +203,13 @@ function nodeClickBolt(node) {
         }
     }
     currentNode=node;
-    if (serNodeArray != null && serNodeArray.length > 0) {
+    /* if (serNodeArray != null && serNodeArray.length > 0) {
         for (var i = 0; i < serNodeArray.length; i++) {
             if (serNodeArray[i].nodeId == currentNode.data("nodeId")) {
                 baseserNodeObj=$.extend(true,{}, serNodeArray[i]);
             }
         }
-    }
+    } */
     //开始节点
     if ((componentsId == "componentsIdStart" && nodeName == "开始")||(componentsId == "componentsIdEnd" && nodeName == "结束")) {
         serInfoLayerBolt(node);
@@ -266,11 +266,10 @@ function serInfoLayerRequest(node){
                     dataInfo.data.componentText+
                     '</body>' +
                     '</html>';
-                sideModalObj.addHtml(page);
 
                 /*继承模板返回的参数*/
                 for (var i = 0; i < serNodeArray.length; i++) {
-                    if (updateflag != "update"&& serNodeArray[i].firstBoolean && serNodeArray[i].nodeId == currentNode.data("nodeId")) {
+                    if (/*updateflag != "update"&&*/ (serNodeArray[i].firstBoolean ==true||serNodeArray[i].firstBoolean =="true") && serNodeArray[i].nodeId == currentNode.data("nodeId")) {//新建编排时,拖拽组件后的相同ajax未完成/修改编排时，新建编排保存前未完成相同ajax的继承
                         JSON.parse(dataInfo.data.inputResume).map(function (item) {
                             item.type="0";
                             if(item.parentId=="0"){
@@ -287,11 +286,12 @@ function serInfoLayerRequest(node){
                         serNodeArray[i].outparameter= JSON.parse(dataInfo.data.outputResume);
                         serNodeArray[i].firstBoolean=false;
 
-                        baseserNodeObj.inparameter = JSON.parse(dataInfo.data.inputResume);
-                        baseserNodeObj.outparameter = JSON.parse(dataInfo.data.outputResume);
-                        baseserNodeObj.firstBoolean=false;
+                        baseserNodeObj=$.extend(true,{}, serNodeArray[i]);
+                    }else if(serNodeArray[i].nodeId == currentNode.data("nodeId")){
+                        baseserNodeObj=$.extend(true,{}, serNodeArray[i]);
                     }
                 }
+                sideModalObj.addHtml(page);
            /* },200);*/
         }
     });
