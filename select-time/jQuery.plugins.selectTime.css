@@ -1,0 +1,62 @@
+body, html {
+    box-sizing: border-box;
+}
+*{
+    box-sizing: inherit;
+}
+.selectTimeBolt{
+    height: 25px;
+    vertical-align: middle;
+    display: inline-block;
+    margin: 12px 0px;
+    padding-left: 10px;
+}
+.selectTimeBolt input{
+    background-color:#eff0f4;
+    border: solid 1px #d9d9d9;
+    margin-left: -1px;
+    display: inline-block;
+}
+/* 按钮 */
+.selectTimeBolt .btn {
+    height: 34px;
+    /*border-color:#d9d9d9;*/
+}
+/* 按钮组 */
+.selectTimeBolt .btn-group{
+    position: relative;
+    vertical-align: middle;
+}
+.selectTimeBolt .btn-group>.btn:last-child:not(:first-child){
+    border-top-left-radius: 0;
+    border-bottom-left-radius: 0;
+}
+.selectTimeBolt .btn-group>.btn:first-child:not(:last-child) {
+    border-top-right-radius: 0;
+    border-bottom-right-radius: 0;
+}
+.selectTimeBolt .btn-group>.btn:not(:first-child):not(:last-child) {
+    border-radius: 0;
+}
+.selectTimeBolt .btn-group>.btn:first-child {
+    margin-left: 0;
+}
+.selectTimeBolt .btn-group .btn+.btn,.btn-group .btn+input,.btn-group div+.btn{
+   /* margin-left: -1px;*/
+}
+.selectTimeBolt .btn-group>.btn {
+    position: relative;
+    float: left;
+}
+.selectTimeBolt .btn-group>.btn.active, .btn-group>.btn:active, .btn-group>.btn:focus, .btn-group>.btn:hover {
+    z-index: 2;
+}
+/* 日期input框 */
+.selectTimeBolt .btn-group.calendarPa input{
+    height: 34px;
+    width: 185px;
+}
+/* laydate样式覆盖 */
+.selectTimeBolt .laydate_box{
+    box-sizing: content-box;
+}
